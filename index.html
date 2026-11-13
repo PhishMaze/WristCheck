@@ -239,53 +239,17 @@
     border-bottom:1px solid var(--hairline);
   }
   .collection-list li{
-    padding:0.75rem 0.1rem;
+    padding:0;
     border-bottom:1px solid var(--hairline);
   }
   .collection-list li.inactive{opacity:0.5;}
-  .owned-tag{
-    font-size:0.66rem;
-    letter-spacing:0.04em;
-    text-transform:uppercase;
-    color:var(--text-faint);
-    background:var(--surface-2);
-    border:1px solid var(--hairline);
-    border-radius:999px;
-    padding:0.15rem 0.5rem;
-    white-space:nowrap;
-    flex-shrink:0;
-  }
   .history-list li:last-child, .collection-list li:last-child{border-bottom:none;}
-  .ci-top{display:flex;align-items:center;justify-content:space-between;gap:0.6rem;}
   .ci-controls{display:flex;align-items:center;gap:0.55rem;margin-top:0.65rem;flex-wrap:wrap;}
   .row-main{display:flex;align-items:center;gap:0.65rem;flex:1;min-width:0;}
   .watch-badge{flex-shrink:0;display:block;}
   .hl-left{display:flex;flex-direction:column;gap:0.1rem;min-width:0;}
   .hl-date{font-family:var(--font-mono);font-size:0.72rem;color:var(--text-faint);}
   .hl-watch{font-size:0.9rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .collection-list .name-input{
-    display:block;
-    width:100%;
-    background:none;
-    border:none;
-    border-bottom:1px solid transparent;
-    padding:0 0 0.1rem;
-    margin:0;
-    font-size:0.9rem;
-    font-family:var(--font-body);
-    color:var(--text);
-    border-radius:0;
-    resize:none;
-    overflow:hidden;
-    white-space:normal;
-    word-break:break-word;
-    line-height:1.3;
-    height:auto;
-    min-height:3.9em;
-  }
-  .collection-list .name-input:hover{border-bottom-color:var(--hairline-strong);}
-  .collection-list .name-input:focus{border-bottom-color:var(--lume);outline:none;}
-
   .pager{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1rem;}
   .pager-btn{
     background:var(--surface-2);
@@ -321,7 +285,7 @@
   }
 
   .collection-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;}
-  .collection-head h2{margin:0;}
+  .collection-head h2{margin:0;white-space:nowrap;}
   .count-pill{
     font-family:var(--font-mono);
     font-size:0.72rem;
@@ -330,16 +294,10 @@
     border:1px solid var(--hairline);
     border-radius:999px;
     padding:0.15rem 0.55rem;
+    white-space:nowrap;
   }
   .add-row{display:flex;gap:0.5rem;align-items:flex-start;}
   .add-row input{margin-bottom:0;}
-  .cl-right{display:flex;align-items:center;gap:0.5rem;flex-shrink:0;}
-  .wear-pill{
-    font-family:var(--font-mono);
-    font-size:0.72rem;
-    color:var(--text-muted);
-  }
-
   .shape-toggle{
     display:flex;
     gap:0.2rem;
@@ -520,6 +478,64 @@
   .acc-reading b{font-family:var(--font-mono);font-size:0.9rem;font-weight:600;color:var(--text);}
   .acc-reading small{font-weight:500;font-size:0.66rem;color:var(--text-faint);margin-left:0.25rem;}
   .acc-reading i{font-style:normal;font-size:0.68rem;color:var(--text-faint);}
+
+  /* collection list */
+  .sort-row{display:flex;align-items:center;justify-content:space-between;gap:0.8rem;margin:0 0.1rem 0.35rem;}
+  .sort-row label{margin:0;}
+  .sort-row select{width:auto;max-width:70%;margin:0;padding:0.45rem 2.1rem 0.45rem 0.85rem;font-size:0.85rem;border-radius:999px;}
+  .coll-row{
+    display:flex;align-items:center;gap:0.75rem;
+    width:100%;padding:0.65rem 0.1rem;
+    background:none;border:none;color:inherit;font:inherit;text-align:left;
+  }
+  .coll-row:active{background:var(--surface);}
+  .coll-main{display:flex;flex-direction:column;gap:0.15rem;flex:1;min-width:0;}
+  .coll-name{font-size:0.92rem;line-height:1.3;color:var(--text);overflow-wrap:anywhere;}
+  .coll-sub{font-family:var(--font-mono);font-size:0.72rem;color:var(--text-faint);}
+  .coll-chev{flex-shrink:0;color:var(--text-faint);}
+  .wb-photo{border-radius:50%;object-fit:cover;border:2px solid var(--hairline-strong);background:var(--surface-2);}
+
+  /* watch page */
+  .back-btn{
+    display:inline-flex;align-items:center;gap:0.25rem;
+    background:none;border:none;padding:0.2rem 0.5rem 0.2rem 0;margin:0 0 0.7rem;
+    color:var(--steel);font-size:0.88rem;font-weight:600;
+  }
+  .watch-title{
+    font-family:var(--font-display);font-size:1.3rem;font-weight:600;line-height:1.25;
+    margin:0 0 0.9rem;overflow-wrap:anywhere;
+  }
+  .watch-hero{border-radius:var(--radius);overflow:hidden;border:1px solid var(--hairline);background:var(--surface);}
+  .watch-hero .hero-photo{display:block;width:100%;aspect-ratio:1 / 1;object-fit:cover;}
+  .watch-hero.is-empty{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.9rem;
+    padding:1.7rem 1rem;border-style:dashed;border-color:var(--hairline-strong);
+  }
+  .photo-actions{display:flex;align-items:center;gap:1rem;margin-top:0.7rem;}
+  .btn-text{background:none;border:none;padding:0.45rem 0;color:var(--text-muted);font-size:0.85rem;font-weight:500;}
+  .btn-text.danger{color:var(--danger);}
+  .watch-stats{margin:1.1rem 0 0;}
+  .watch-stats .stat-block{padding:0.75rem 0.3rem;}
+  .watch-stats .stat-num{font-size:1.05rem;white-space:nowrap;}
+  .acc-synopsis{font-size:0.86rem;line-height:1.5;color:var(--text-muted);margin:0 0.1rem 0.5rem;}
+  .more-btn{display:block;margin:0.3rem auto 0;}
+  .read-btn{display:block;width:100%;margin-top:0.8rem;}
+  .details-card{margin-top:1.5rem;}
+  .details-card .ci-controls{margin-top:0;}
+  .detail-note{font-size:0.76rem;line-height:1.45;color:var(--text-faint);margin:0.9rem 0 0;}
+  .remove-btn{display:block;margin:0 auto;text-align:center;}
+
+  .toast{
+    position:fixed;left:50%;bottom:calc(5rem + env(safe-area-inset-bottom));
+    transform:translateX(-50%);
+    width:max-content;max-width:min(400px, calc(100% - 2.5rem));
+    background:var(--surface-2);border:1px solid var(--hairline-strong);border-radius:12px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.45);
+    padding:0.55rem 0.95rem;
+    color:var(--text);font-size:0.82rem;line-height:1.4;text-align:center;
+    z-index:20;
+  }
+  .toast.err{border-color:var(--danger);color:var(--danger);}
 </style>
 </head>
 <body>
@@ -586,18 +602,31 @@
     </section>
 
     <section id="panel-collection" class="panel">
-      <div class="card">
-        <div class="collection-head">
-          <h2 style="margin:0;">Your collection</h2>
-          <span class="count-pill" id="collectionCount"></span>
+      <div id="collListView">
+        <div class="card">
+          <div class="collection-head">
+            <h2 style="margin:0;">Your collection</h2>
+            <span class="count-pill" id="collectionCount"></span>
+          </div>
+          <div class="add-row">
+            <input type="text" id="addWatchInput" placeholder="Add a watch…">
+            <button id="addWatchBtn" class="btn-secondary">Add</button>
+          </div>
+          <div id="collectionMsg" class="hint"></div>
         </div>
-        <div class="add-row">
-          <input type="text" id="addWatchInput" placeholder="Add a watch…">
-          <button id="addWatchBtn" class="btn-secondary">Add</button>
+        <div class="sort-row">
+          <label for="collSort">Sort by</label>
+          <select id="collSort">
+            <option value="name">Name</option>
+            <option value="worn">Most worn</option>
+            <option value="accurate">Most accurate</option>
+            <option value="added">Recently added</option>
+          </select>
         </div>
-        <div id="collectionMsg" class="hint"></div>
+        <ul id="collectionList" class="collection-list"></ul>
       </div>
-      <ul id="collectionList" class="collection-list"></ul>
+      <div id="watchView" hidden></div>
+      <input type="file" id="photoFile" accept="image/*" hidden>
     </section>
 
     <section id="panel-stats" class="panel">
@@ -692,6 +721,8 @@
 
   </main>
 
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
   <nav class="tab-bar">
     <button class="tab-btn active" data-tab="today">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.6"><circle cx="10" cy="10" r="7.5"/><path d="M10 6.5V10L12.3 11.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -716,7 +747,7 @@
 <script>
 const SEED = {"entries":[{"date":"2026-01-01","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-02","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-01-03","watch":"Ixdao Engineer"},{"date":"2026-01-04","watch":"Ixdao Engineer"},{"date":"2026-01-05","watch":"Ixdao Engineer"},{"date":"2026-01-06","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-07","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-08","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-09","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-10","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-11","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-12","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-13","watch":"Tudor Pelagos 39"},{"date":"2026-01-14","watch":"Tudor Pelagos 39"},{"date":"2026-01-15","watch":"Tudor Pelagos 39"},{"date":"2026-01-16","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-17","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-18","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-20","watch":"Ixdao Engineer"},{"date":"2026-01-21","watch":"Tudor Pelagos 39"},{"date":"2026-01-22","watch":"Casio G-Shock Mudmaster GWG-2000"},{"date":"2026-01-22","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-01-23","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-24","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-25","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-26","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-27","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-28","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-29","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-30","watch":"Tudor Pelagos 39"},{"date":"2026-01-31","watch":"Tudor Pelagos 39"},{"date":"2026-02-01","watch":"Tudor Pelagos 39"},{"date":"2026-02-02","watch":"Tudor Pelagos 39"},{"date":"2026-02-03","watch":"Seiko Speedtimer Prospex SPB513"},{"date":"2026-02-04","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-05","watch":"Seiko Speedtimer Prospex SPB513"},{"date":"2026-02-06","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-07","watch":"Seiko Speedtimer Prospex SPB513"},{"date":"2026-02-08","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-09","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-10","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-11","watch":"Tudor Pelagos 39"},{"date":"2026-02-12","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-13","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-14","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-15","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-16","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-17","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-02-18","watch":"Tudor Pelagos 39"},{"date":"2026-02-19","watch":"Tudor Pelagos 39"},{"date":"2026-02-20","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-02-21","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-02-22","watch":"Tudor Pelagos 39"},{"date":"2026-02-23","watch":"Tudor Pelagos 39"},{"date":"2026-02-24","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-25","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-26","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-27","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-28","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-01","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-02","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-03","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-04","watch":"IWC Ingenieur IW322701"},{"date":"2026-03-05","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-06","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-07","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-08","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-09","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-10","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-11","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-12","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-13","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-14","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-15","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-16","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-17","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-18","watch":"Casio G-Shock Mudmaster GWG-2000"},{"date":"2026-03-19","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-20","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-21","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-22","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-23","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-24","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-25","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-26","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-27","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-28","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-29","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-30","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-31","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-01","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-02","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-02","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-04-03","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-04","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-04-05","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-06","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-07","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-08","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-09","watch":"Tudor Alinghi Red Bull Pelagos FXD"},{"date":"2026-04-10","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-11","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-04-12","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-13","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-14","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-15","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-15","watch":"Formex Essence Leggera"},{"date":"2026-04-16","watch":"Formex Essence Leggera"},{"date":"2026-04-17","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-18","watch":"Formex Essence Leggera"},{"date":"2026-04-18","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-19","watch":"Casio G-Shock Mudmaster GWG-2000"},{"date":"2026-04-20","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-21","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-22","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-23","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-24","watch":"Formex Essence Leggera"},{"date":"2026-04-25","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-26","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-27","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-28","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-29","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-30","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-01","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-02","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-03","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-04","watch":"Formex Essence Leggera"},{"date":"2026-05-05","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-06","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-07","watch":"Formex Essence Leggera"},{"date":"2026-05-08","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-05-09","watch":"Formex Essence Leggera"},{"date":"2026-05-09","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-10","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-11","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-12","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-05-13","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-14","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-15","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-16","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-17","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-05-18","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-05-19","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-20","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-05-21","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-22","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-23","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-24","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-25","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-26","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-27","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-05-28","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-05-29","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-30","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-31","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-01","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-02","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-03","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-04","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-05","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-06","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-07","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-08","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-09","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-09","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-10","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-11","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-12","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-13","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-14","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-15","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-16","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-16","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-17","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-18","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-19","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-06-19","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-20","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-06-22","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-06-23","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-24","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-25","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-26","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-06-27","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-28","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-29","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-06-30","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-01","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-02","watch":"IWC Mark XVII IW326501"},{"date":"2026-07-03","watch":"IWC Mark XVII IW326501"},{"date":"2026-07-04","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-07-05","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-06","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-06","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-07","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-08","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-09","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-10","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-10","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-07-11","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-07-12","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-13","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-14","watch":"IWC Mark XVII IW326501"},{"date":"2026-07-15","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-16","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-17","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-18","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-19","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-20","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-07-20","watch":"Sinn 144 St Sa"},{"date":"2026-07-21","watch":"Sinn 144 St Sa"},{"date":"2026-07-22","watch":"Sinn 144 St Sa"},{"date":"2026-07-23","watch":"Sinn 144 St Sa"},{"date":"2026-07-24","watch":"Sinn 144 St Sa"},{"date":"2026-07-25","watch":"Sinn 144 St Sa"},{"date":"2026-07-26","watch":"Sinn 144 St Sa"},{"date":"2026-07-27","watch":"Sinn 144 St Sa"},{"date":"2026-07-28","watch":"Sinn 144 St Sa"},{"date":"2026-07-29","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-30","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-31","watch":"Sinn 144 St Sa"},{"date":"2026-07-31","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-08-01","watch":"Sinn 144 St Sa"},{"date":"2026-08-02","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-08-03","watch":"Sinn 144 St Sa"},{"date":"2026-08-04","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-08-05","watch":"Sinn 144 St Sa"},{"date":"2026-08-06","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-08-07","watch":"Sinn 144 St Sa"},{"date":"2026-08-08","watch":"Sinn 144 St Sa"},{"date":"2026-08-09","watch":"Sinn 144 St Sa"},{"date":"2026-08-10","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-08-11","watch":"Sinn 144 St Sa"},{"date":"2026-08-12","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-08-13","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-08-13","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-08-14","watch":"Sinn 144 St Sa"},{"date":"2026-08-15","watch":"Sinn 144 St Sa"},{"date":"2026-08-16","watch":"Sinn 144 St Sa"},{"date":"2026-08-17","watch":"Sinn 144 St Sa"},{"date":"2026-08-18","watch":"Sinn 144 St Sa"},{"date":"2026-08-18","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-08-19","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-08-20","watch":"Sinn 144 St Sa"},{"date":"2026-08-21","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-08-22","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-08-23","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-08-24","watch":"Sinn 144 St Sa"},{"date":"2026-08-25","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-08-26","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-08-27","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-08-28","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-08-29","watch":"Thorn Pelagos 39"},{"date":"2026-08-30","watch":"Pagani Superocean"},{"date":"2026-08-31","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-09-01","watch":"Sinn 144 St Sa"},{"date":"2026-09-02","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-03","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-04","watch":"Thorn Pelagos 39"},{"date":"2026-09-05","watch":"Sinn 144 St Sa"},{"date":"2026-09-06","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-09-07","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-08","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-09","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-10","watch":"Thorn Pelagos 39"},{"date":"2026-09-11","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-09-11","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-12","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-12","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-09-13","watch":"Pagani Superocean"},{"date":"2026-09-14","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-15","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-16","watch":"Sinn 144 St Sa"},{"date":"2026-09-17","watch":"Sinn 144 St Sa"},{"date":"2026-09-18","watch":"Thorn Pelagos 39"},{"date":"2026-09-18","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-19","watch":"Thorn Pelagos 39"},{"date":"2026-09-20","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-21","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-22","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-23","watch":"Sinn 144 St Sa"},{"date":"2026-09-24","watch":"Sinn 144 St Sa"},{"date":"2026-09-25","watch":"Sinn 144 St Sa"},{"date":"2026-09-26","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-27","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-28","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-09-29","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-30","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-10-01","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-03","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-10-04","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-10-04","watch":"Sinn 144 St Sa"},{"date":"2026-10-05","watch":"Sinn 144 St Sa"},{"date":"2026-10-06","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-07","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-08","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-09","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-10","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-11","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-12","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-13","watch":"Thorn Pelagos 39"},{"date":"2026-10-14","watch":"Pagani Superocean"},{"date":"2026-10-15","watch":"Sinn 144 St Sa"},{"date":"2026-10-16","watch":"Sinn 144 St Sa"},{"date":"2026-10-17","watch":"Sinn 144 St Sa"},{"date":"2026-10-18","watch":"Sinn 144 St Sa"},{"date":"2026-10-19","watch":"Sinn 144 St Sa"},{"date":"2026-10-20","watch":"Sinn 144 St Sa"},{"date":"2026-10-21","watch":"Sinn 144 St Sa"},{"date":"2026-10-22","watch":"Sinn 144 St Sa"},{"date":"2026-10-23","watch":"Sinn 144 St Sa"},{"date":"2026-10-24","watch":"Sinn 144 St Sa"},{"date":"2026-10-25","watch":"Sinn 144 St Sa"},{"date":"2026-10-26","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-27","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-28","watch":"Thorn Pelagos 39"},{"date":"2026-10-29","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-30","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-10-31","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-11-01","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-11-02","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-11-03","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-11-04","watch":"Pagani Superocean"},{"date":"2026-11-05","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-11-06","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-11-07","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-11-08","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-11-09","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-11-10","watch":"Sinn 144 St Sa"},{"date":"2026-11-11","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-11-12","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-11-12","watch":"San Martin Pepsi GMT SN0109"}],"collection":[{"name":"Casio G-Shock Custom Blue GMW-B5000","color":"#00374a","shape":"digital","active":true},{"name":"Casio G-Shock Custom Silver GMW-B5000","color":"#858585","shape":"digital","active":true},{"name":"Casio G-Shock GMW-B5000TVA","color":"#6C9CB8","shape":"digital","active":false},{"name":"Casio G-Shock Mudmaster GWG-2000","color":"#7FA8E0","shape":"digital","active":false},{"name":"Formex Essence Leggera","color":"#9d9ba1","shape":"analog","active":false},{"name":"IWC Chronograph 41 Top Gun IW389401","color":"#D98080","shape":"analog","active":false},{"name":"IWC Ingenieur 40 Blue IW328907","color":"#0042a9","shape":"analog","active":true},{"name":"IWC Ingenieur IW322701","color":"#D98BC0","shape":"analog","active":false},{"name":"IWC Mark XVII IW326501","color":"#716581","shape":"analog","active":false},{"name":"Ixdao Engineer","color":"#E0A165","shape":"analog","active":false},{"name":"Pagani Superocean","color":"#3a87fe","shape":"analog","active":true},{"name":"San Martin Pepsi GMT SN0109","color":"#5c0701","shape":"analog","active":true},{"name":"Seiko 5 GMT Field SSK023","color":"#333333","shape":"analog","active":true},{"name":"Seiko Limited Edition Prospex SPB149","color":"#011d57","shape":"analog","active":true},{"name":"Seiko Prospex GMT SPB519","color":"#cbf0ff","shape":"analog","active":true},{"name":"Sinn 144 St Sa","color":"#ff6250","shape":"analog","active":true},{"name":"Thorn Pelagos 39","color":"#f4a4c0","shape":"analog","active":true},{"name":"Tudor Pelagos 39","color":"#5FC2C9","shape":"analog","active":false}]};
 
-const KEYS = { entries: 'wristory:entries', collection: 'wristory:collection', accuracy: 'wristory:accuracy' };
+const KEYS = { entries: 'wristory:entries', collection: 'wristory:collection', accuracy: 'wristory:accuracy', photos: 'wristory:photos', prefs: 'wristory:prefs' };
 
 const PALETTE = [
   "#C6EE7E","#6FB8A6","#6C9CB8","#7FA8E0","#8D7BC9","#B090D9",
@@ -845,6 +876,8 @@ async function loadState(){
   state.collection = collection;
   const accuracy = await storageGet(KEYS.accuracy);
   state.accuracy = Array.isArray(accuracy) ? accuracy : [];
+  const prefs = await storageGet(KEYS.prefs);
+  if(prefs && COLL_SORTS[prefs.collSort]) collSort = prefs.collSort;
   if(needsSave || migrated){
     await storageSet(KEYS.entries, state.entries);
     await storageSet(KEYS.collection, state.collection);
@@ -855,21 +888,43 @@ function isDigitalGuess(name){
   return /casio|g-shock|g shock/i.test(name);
 }
 
+const HEX_COLOR = /^#[0-9a-fA-F]{6}$/;
+
+function newWatchId(){
+  return 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
+}
+
+// Watches saved before photos existed have no id. Theirs is worked out from
+// the name, so it comes out the same every time until it has been saved.
+function nameWatchId(name){
+  let h = 2166136261;
+  for(let i = 0; i < name.length; i++){ h ^= name.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return 'w' + (h >>> 0).toString(36);
+}
+
 function normalizeCollection(raw){
   let migrated = false;
   const names = raw.map(x => typeof x === 'string' ? x : x.name).slice().sort((a,b)=>a.localeCompare(b));
+  const usedIds = new Set();
   const collection = raw.map(x => {
+    const obj = (typeof x === 'object' && x) ? x : {};
     const name = typeof x === 'string' ? x : x.name;
     const idx = names.indexOf(name);
-    if(typeof x === 'string' || !x.color || !x.shape || typeof x.active === 'undefined'){
+    if(typeof x === 'string' || !obj.color || !obj.shape || typeof obj.active === 'undefined' || !obj.id){
       migrated = true;
     }
-    return {
+    let id = obj.id ? String(obj.id) : nameWatchId(name);
+    if(usedIds.has(id)){ id = newWatchId(); migrated = true; }
+    usedIds.add(id);
+    const out = {
+      id,
       name,
-      color: (typeof x === 'object' && x.color) || PALETTE[idx % PALETTE.length],
-      shape: (typeof x === 'object' && x.shape === 'digital') ? 'digital' : ((typeof x === 'object' && x.shape === 'analog') ? 'analog' : (isDigitalGuess(name) ? 'digital' : 'analog')),
-      active: (typeof x === 'object' && typeof x.active !== 'undefined') ? x.active !== false : true
+      color: HEX_COLOR.test(obj.color || '') ? obj.color : PALETTE[idx % PALETTE.length],
+      shape: obj.shape === 'digital' ? 'digital' : (obj.shape === 'analog' ? 'analog' : (isDigitalGuess(name) ? 'digital' : 'analog')),
+      active: typeof obj.active !== 'undefined' ? obj.active !== false : true
     };
+    if(typeof obj.added === 'string' && obj.added) out.added = obj.added;
+    return out;
   });
   return { collection, migrated };
 }
@@ -883,6 +938,11 @@ function styleFor(name){
 function watchBadge(name, size){
   const { color: c, shape } = styleFor(name);
   size = size || 34;
+  const w = watchByName(name);
+  const ph = w ? photos[w.id] : null;
+  if(ph){
+    return `<img class="watch-badge wb-photo" src="${escapeHtml(ph.thumb)}" width="${size}" height="${size}" alt="" style="border-color:${c}">`;
+  }
   if(shape === 'digital'){
     return `<svg class="watch-badge" width="${size}" height="${size}" viewBox="0 0 36 36">
       <rect x="1" y="13" width="3" height="4" rx="1" fill="${c}"/>
@@ -1085,64 +1145,514 @@ function miniShapeIcon(shape){
   return `<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.2"/><path d="M8 8V4.6" stroke-linecap="round"/><path d="M8 8L10.6 9.6" stroke-linecap="round"/></svg>`;
 }
 
-function collectionRow(w, count){
+/* ---------- watch photos ---------- */
+// Photos stay on this device. Each one is stored twice: a small thumbnail
+// for lists and a larger square copy for the watch's own page. They go in
+// the browser's database (IndexedDB), which has far more room than the
+// storage used for the log. If that isn't available they fall back to
+// ordinary storage at a smaller size.
+const PHOTO_DB = 'wristcheck', PHOTO_STORE = 'photos';
+const photos = {};          // watch id -> { thumb, full } image URLs ready for <img>
+let photoDb = null;
+let photoKv = {};           // copy held in ordinary storage: watch id -> { thumb, full } data URLs
+let photosReady = Promise.resolve(0);
+
+function isPhotoData(s){
+  return typeof s === 'string' && s.indexOf('data:image/') === 0;
+}
+
+function openPhotoDb(){
+  return new Promise(resolve => {
+    if(hasClaudeStorage || typeof indexedDB === 'undefined' || !indexedDB){ resolve(null); return; }
+    let done = false;
+    const finish = (db) => { if(!done){ done = true; resolve(db); } };
+    setTimeout(() => finish(null), 3000);        // some browsers never answer; don't hang on them
+    try{
+      const req = indexedDB.open(PHOTO_DB, 1);
+      req.onupgradeneeded = () => {
+        if(!req.result.objectStoreNames.contains(PHOTO_STORE)) req.result.createObjectStore(PHOTO_STORE);
+      };
+      req.onsuccess = () => finish(req.result);
+      req.onerror = () => finish(null);
+      req.onblocked = () => finish(null);
+    }catch(e){ finish(null); }
+  });
+}
+
+function photoDbRun(mode, fn){
+  return new Promise((resolve, reject) => {
+    try{
+      const tx = photoDb.transaction(PHOTO_STORE, mode);
+      fn(tx.objectStore(PHOTO_STORE));
+      tx.oncomplete = () => resolve();
+      tx.onerror = tx.onabort = () => reject(tx.error || new Error('photo storage failed'));
+    }catch(e){ reject(e); }
+  });
+}
+
+function photoDbAll(){
+  return new Promise((resolve, reject) => {
+    const out = {};
+    try{
+      const tx = photoDb.transaction(PHOTO_STORE, 'readonly');
+      const req = tx.objectStore(PHOTO_STORE).openCursor();
+      req.onsuccess = () => { const c = req.result; if(c){ out[c.key] = c.value; c.continue(); } };
+      tx.oncomplete = () => resolve(out);
+      tx.onerror = tx.onabort = () => reject(tx.error || new Error('photo storage failed'));
+    }catch(e){ reject(e); }
+  });
+}
+
+// Stored photos are text (data URLs). Turn each into a short image address
+// once, so a photo that appears in thirty list rows is only decoded once.
+function photoUrl(dataUrl){
+  try{
+    const comma = dataUrl.indexOf(',');
+    const mime = dataUrl.slice(5, comma).split(';')[0] || 'image/jpeg';
+    const bin = atob(dataUrl.slice(comma + 1));
+    const bytes = new Uint8Array(bin.length);
+    for(let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return URL.createObjectURL(new Blob([bytes], { type: mime }));
+  }catch(e){ return dataUrl; }
+}
+
+function dropPhoto(id){
+  const old = photos[id];
+  if(!old) return;
+  [old.thumb, old.full].forEach(u => { if(u.indexOf('blob:') === 0){ try{ URL.revokeObjectURL(u); }catch(e){} } });
+  delete photos[id];
+}
+
+function holdPhoto(id, rec){
+  dropPhoto(id);
+  photos[id] = { thumb: photoUrl(rec.thumb), full: photoUrl(rec.full) };
+}
+
+async function loadPhotos(){
+  const kv = await storageGet(KEYS.photos);
+  photoKv = (kv && typeof kv === 'object' && !Array.isArray(kv)) ? kv : {};
+  let stored = {};
+  photoDb = await openPhotoDb();
+  if(photoDb){
+    try{ stored = await photoDbAll(); }catch(e){ console.error('photo load failed', e); }
+  }
+  const all = Object.assign({}, photoKv, stored);
+  Object.keys(all).forEach(id => {
+    const rec = all[id];
+    if(rec && isPhotoData(rec.thumb) && isPhotoData(rec.full)) holdPhoto(id, rec);
+  });
+  return Object.keys(photos).length;
+}
+
+async function savePhoto(id, rec){
+  if(photoDb){
+    try{
+      await photoDbRun('readwrite', store => store.put(rec, id));
+      // Ask the browser not to clear this site's data when space runs low.
+      try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); }catch(e){}
+      return true;
+    }catch(e){ console.error('photo save failed', e); return false; }
+  }
+  const next = Object.assign({}, photoKv);
+  next[id] = rec;
+  const ok = await rawStorageSet(KEYS.photos, next);
+  if(ok) photoKv = next;
+  return ok;
+}
+
+async function deletePhoto(id){
+  if(photoDb){
+    try{ await photoDbRun('readwrite', store => store.delete(id)); }catch(e){ console.error('photo delete failed', e); }
+  }
+  if(photoKv[id]){
+    const next = Object.assign({}, photoKv);
+    delete next[id];
+    if(await rawStorageSet(KEYS.photos, next)) photoKv = next;
+  }
+}
+
+// Shrink in halves rather than one big jump: phone photos are ten times
+// larger than needed and a single resize leaves them looking gritty.
+function shrinkSquare(source, sx, sy, side, out){
+  let cur = source, x = sx, y = sy, s = side;
+  for(;;){
+    const next = (s / out > 2) ? Math.ceil(s / 2) : out;
+    const cv = document.createElement('canvas');
+    cv.width = next; cv.height = next;
+    const g = cv.getContext('2d');
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = 'high';
+    g.fillStyle = '#17181B';
+    g.fillRect(0, 0, next, next);
+    g.drawImage(cur, x, y, s, s, 0, 0, next, next);
+    if(next === out) return cv;
+    cur = cv; x = 0; y = 0; s = next;
+  }
+}
+
+// Takes whatever the photo library hands over, crops it to a centred
+// square and returns the two sizes to store.
+function makePhoto(file){
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    const done = () => { try{ URL.revokeObjectURL(url); }catch(e){} };
+    img.onerror = () => { done(); reject(new Error('unreadable image')); };
+    img.onload = () => {
+      try{
+        const w = img.naturalWidth, h = img.naturalHeight;
+        if(!w || !h) throw new Error('empty image');
+        const side = Math.min(w, h);
+        const fullSize = Math.min(photoDb ? 900 : 420, side);
+        const fullCv = shrinkSquare(img, (w - side) / 2, (h - side) / 2, side, fullSize);
+        const thumbSize = Math.min(160, fullSize);
+        const thumbCv = thumbSize === fullSize ? fullCv : shrinkSquare(fullCv, 0, 0, fullSize, thumbSize);
+        const rec = { thumb: thumbCv.toDataURL('image/jpeg', 0.8), full: fullCv.toDataURL('image/jpeg', 0.82) };
+        if(!isPhotoData(rec.thumb) || !isPhotoData(rec.full)) throw new Error('could not encode image');
+        done(); resolve(rec);
+      }catch(e){ done(); reject(e); }
+    };
+    img.src = url;
+  });
+}
+
+/* ---------- render: collection ---------- */
+const COLL_SORTS = { name: 'Name', worn: 'Most worn', accurate: 'Most accurate', added: 'Recently added' };
+const CHEVRON = '<svg class="coll-chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5 10.5 8 6 12.5"/></svg>';
+let collSort = 'name';
+let openWatchId = null;       // the watch whose page is open in the Collection tab (null = the list)
+let collListScroll = 0;       // where the list was scrolled to before a watch page opened
+let watchAccAll = false;      // watch page: show every reading rather than the latest dozen
+let removeArmedAt = 0;
+
+function watchByName(name){
+  return state.collection.find(c => c.name === name) || null;
+}
+function openWatchObj(){
+  return openWatchId ? (state.collection.find(c => c.id === openWatchId) || null) : null;
+}
+
+// Per-watch numbers used by the list, the sort order and the watch page.
+function collectionFacts(){
+  const facts = {};
+  const get = (n) => facts[n] || (facts[n] = { count: 0, first: '', last: '', rates: [], avg: null });
+  state.entries.forEach(e => {
+    const f = get(e.watch);
+    f.count++;
+    if(!f.first || e.date < f.first) f.first = e.date;
+    if(e.date > f.last) f.last = e.date;
+  });
+  state.accuracy.forEach(r => {
+    if(typeof r.rate === 'number' && isFinite(r.rate)) get(r.watch).rates.push(r.rate);
+  });
+  Object.keys(facts).forEach(n => {
+    const f = facts[n];
+    if(f.rates.length) f.avg = f.rates.reduce((s, v) => s + v, 0) / f.rates.length;
+  });
+  return facts;
+}
+
+function sortedCollection(facts){
+  const blank = { count: 0, first: '', last: '', rates: [], avg: null };
+  const byName = (a, b) => a.w.name.localeCompare(b.w.name);
+  const list = state.collection.map((w, i) => ({ w, i, f: facts[w.name] || blank }));
+  list.sort((a, b) => {
+    if(collSort === 'worn') return (b.f.count - a.f.count) || byName(a, b);
+    if(collSort === 'accurate'){
+      // Closest to zero seconds a day first. Watches with no readings go last.
+      const ha = a.f.avg != null, hb = b.f.avg != null;
+      if(ha !== hb) return ha ? -1 : 1;
+      if(ha) return (Math.abs(a.f.avg) - Math.abs(b.f.avg)) || byName(a, b);
+      return byName(a, b);
+    }
+    if(collSort === 'added'){
+      // The date it was added here. Watches from before that was recorded
+      // use the first day they were logged instead.
+      const ka = a.w.added || a.f.first || '', kb = b.w.added || b.f.first || '';
+      if(ka !== kb) return ka < kb ? 1 : -1;
+      return b.i - a.i;
+    }
+    return byName(a, b);
+  });
+  return list;
+}
+
+function setCollSort(value){
+  if(!COLL_SORTS[value] || value === collSort) return;
+  collSort = value;
+  rawStorageSet(KEYS.prefs, { collSort });
+  renderCollection();
+}
+
+function collectionRow(w, f){
+  const sub = [f.count + (f.count === 1 ? ' wear' : ' wears')];
+  if(f.avg != null) sub.push(fmtRate(f.avg) + ' s/d');
+  if(!w.active) sub.push('Not owned');
   return `
-    <li data-watch-row="${escapeHtml(w.name)}" class="${w.active ? '' : 'inactive'}">
-      <div class="ci-top">
-        <div class="row-main">
-          ${watchBadge(w.name, 34)}
-          <div class="hl-left">
-            <textarea class="name-input" rows="1" data-watch="${escapeHtml(w.name)}" aria-label="Rename watch">${escapeHtml(w.name)}</textarea>
-          </div>
-        </div>
-        <div class="cl-right">
-          ${w.active ? '' : '<span class="owned-tag">Not owned</span>'}
-          <span class="wear-pill">${count || 0}&times;</span>
-          <button class="icon-btn" data-remove="${escapeHtml(w.name)}" aria-label="Remove watch">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 4.5h10"/><path d="M6.5 4.5V3.2c0-.4.3-.7.7-.7h1.6c.4 0 .7.3.7.7v1.3"/><path d="M4.2 4.5l.5 8c0 .5.5.9 1 .9h4.6c.5 0 .9-.4 1-.9l.5-8"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="ci-controls">
-        <div class="shape-toggle">
-          <button type="button" class="shape-btn ${w.shape === 'analog' ? 'active' : ''}" data-shape-set="analog" data-watch="${escapeHtml(w.name)}" aria-label="Use analog icon">${miniShapeIcon('analog')}</button>
-          <button type="button" class="shape-btn ${w.shape === 'digital' ? 'active' : ''}" data-shape-set="digital" data-watch="${escapeHtml(w.name)}" aria-label="Use digital icon">${miniShapeIcon('digital')}</button>
-        </div>
-        <input type="color" class="color-input" value="${w.color}" data-watch="${escapeHtml(w.name)}" aria-label="Badge color for ${escapeHtml(w.name)}">
-        <button type="button" class="active-toggle ${w.active ? 'is-on' : ''}" data-toggle-active="${escapeHtml(w.name)}" aria-pressed="${w.active ? 'true' : 'false'}">
-          <span class="switch"></span>
-          <span class="switch-label">In collection</span>
-        </button>
-      </div>
+    <li class="${w.active ? '' : 'inactive'}">
+      <button type="button" class="coll-row" data-open-watch="${escapeHtml(w.name)}">
+        ${watchBadge(w.name, 46)}
+        <span class="coll-main">
+          <span class="coll-name">${escapeHtml(w.name)}</span>
+          <span class="coll-sub">${sub.join(' · ')}</span>
+        </span>
+        ${CHEVRON}
+      </button>
     </li>
   `;
 }
 
-/* ---------- render: collection ---------- */
+function updateCollectionSummary(){
+  const el = document.getElementById('collectionCount');
+  if(!el) return;
+  const activeCount = state.collection.filter(w => w.active).length;
+  const inactiveCount = state.collection.length - activeCount;
+  el.textContent = activeCount + ' owned' + (inactiveCount ? ' · ' + inactiveCount + ' not' : '');
+}
+
 function renderCollection(){
-  const list = document.getElementById('collectionList');
-  const panel = document.getElementById('panel-collection');
-  const prevScroll = panel ? panel.scrollTop : 0;
+  const listView = document.getElementById('collListView');
+  const watchView = document.getElementById('watchView');
+  const open = openWatchObj();
+  if(!open) openWatchId = null;
+  listView.hidden = !!open;
+  watchView.hidden = !open;
   updateCollectionSummary();
+  if(open){ renderWatchView(open); return; }
+  watchView.innerHTML = '';
 
-  const countByName = {};
-  state.entries.forEach(e => countByName[e.watch] = (countByName[e.watch]||0) + 1);
-
+  const list = document.getElementById('collectionList');
+  const sortSel = document.getElementById('collSort');
+  if(sortSel.value !== collSort) sortSel.value = collSort;
   if(state.collection.length === 0){
-    list.innerHTML = '<li class="empty-state" style="display:block;">No watches yet — add your first one above.</li>';
-    if(panel) panel.scrollTop = prevScroll;
+    list.innerHTML = '<li class="empty-state" style="display:block;">No watches yet. Add your first one above.</li>';
     return;
   }
+  const facts = collectionFacts();
+  list.innerHTML = sortedCollection(facts).map(x => collectionRow(x.w, x.f)).join('');
+}
 
-  // Sorted purely alphabetically, independent of active status, so toggling a
-  // watch's "in collection" state never moves its row — only its own styling
-  // changes. (Grouping active/inactive into separate sections previously meant
-  // a toggle could relocate a row across the whole list, which is what caused
-  // the scroll position to jump or the list to appear to collapse.)
-  const sorted = state.collection.slice().sort((a,b) => a.name.localeCompare(b.name));
-  const html = sorted.map(w => collectionRow(w, countByName[w.name])).join('');
-  list.innerHTML = html;
-  if(panel) panel.scrollTop = prevScroll;
+/* ---------- watch page ---------- */
+function collScrollEl(){
+  return document.getElementById('panel-collection');
+}
+
+function openWatch(name){
+  const w = watchByName(name);
+  if(!w) return;
+  collListScroll = collScrollEl().scrollTop;
+  openWatchId = w.id;
+  watchAccAll = false;
+  renderCollection();
+  collScrollEl().scrollTop = 0;
+}
+
+function closeWatch(){
+  if(!openWatchId) return;
+  openWatchId = null;
+  renderCollection();
+  collScrollEl().scrollTop = collListScroll;
+}
+
+function fmtLastWorn(iso){
+  const d = toDateObj(iso);
+  if(d.getFullYear() === new Date().getFullYear()) return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+}
+
+function watchHeroHtml(w){
+  const ph = photos[w.id];
+  if(ph){
+    return `
+      <div class="watch-hero"><img class="hero-photo" src="${escapeHtml(ph.full)}" alt="Photo of ${escapeHtml(w.name)}"></div>
+      <div class="photo-actions">
+        <button type="button" class="btn-secondary" data-photo="pick">Change photo</button>
+        <button type="button" class="btn-text" data-photo="remove">Remove photo</button>
+      </div>`;
+  }
+  return `
+    <div class="watch-hero is-empty">
+      ${watchBadge(w.name, 72)}
+      <button type="button" class="btn-secondary" data-photo="pick">Add photo</button>
+    </div>`;
+}
+
+// The timegrapher listens for a mechanical tick, so digital watches are left out.
+function canTakeReading(w){
+  return w.active && w.shape !== 'digital';
+}
+
+// A sentence or two summing up a watch's readings (newest first).
+function accSynopsis(readings){
+  const n = readings.length;
+  const avg = readings.reduce((s, r) => s + r.rate, 0) / n;
+  const a = Math.abs(avg);
+  const perWeek = a * 7;
+  const week = perWeek >= 90 ? 'about ' + (perWeek / 60).toFixed(1) + ' minutes a week' : 'about ' + Math.round(perWeek) + ' seconds a week';
+  const over = n === 1 ? 'in its one reading so far' : 'on average over ' + n + ' readings';
+  let text = a < 0.05 ? 'Dead on ' + over + '.'
+    : (avg > 0 ? 'Gains ' : 'Loses ') + a.toFixed(1) + ' seconds a day ' + over + ', ' + week + '.';
+  if(n > 1){
+    let lo = readings[0], hi = readings[0];
+    readings.forEach(r => { if(r.rate < lo.rate) lo = r; if(r.rate > hi.rate) hi = r; });
+    if(hi.rate - lo.rate >= 0.1){
+      const at = r => fmtRate(r.rate) + (r.pos ? ' ' + r.pos.toLowerCase() : '');
+      text += ' Readings run from ' + at(lo) + ' to ' + at(hi) + '.';
+    } else {
+      text += ' Every reading agrees.';
+    }
+  }
+  return text;
+}
+
+function renderWatchView(w){
+  removeArmedAt = 0;
+  const view = document.getElementById('watchView');
+  const f = collectionFacts()[w.name] || { count: 0, last: '', avg: null };
+  const readings = state.accuracy.filter(r => r.watch === w.name)
+    .sort((a, b) => String(b.ts).localeCompare(String(a.ts)));
+  const shown = watchAccAll ? readings : readings.slice(0, 12);
+
+  const rows = shown.map(r => `
+    <li>
+      <div class="row-main">
+        <div class="hl-left">
+          <span class="hl-date">${escapeHtml(fmtReadingTime(r.ts))}</span>
+          <span class="hl-watch">${escapeHtml(r.pos || 'Position not noted')}</span>
+        </div>
+      </div>
+      <span class="acc-reading"><b>${fmtRate(r.rate)}<small>s/d</small></b>${r.beat == null ? '' : '<i>beat ' + Number(r.beat).toFixed(1) + ' ms</i>'}</span>
+      <button class="icon-btn" data-acc-del="${escapeHtml(r.id)}" aria-label="Delete reading">${ACC_TRASH}</button>
+    </li>`).join('');
+
+  view.innerHTML = `
+    <button type="button" class="back-btn" data-watch-back>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5 5.5 8 10 12.5"/></svg>
+      Collection
+    </button>
+    <h1 class="watch-title">${escapeHtml(w.name)}</h1>
+    <div id="watchHeroWrap">${watchHeroHtml(w)}</div>
+
+    <div class="stats-summary watch-stats">
+      <div class="stat-block"><div class="stat-num">${f.count}</div><div class="stat-label">Times worn</div></div>
+      <div class="stat-block"><div class="stat-num">${f.last ? escapeHtml(fmtLastWorn(f.last)) : 'Never'}</div><div class="stat-label">Last worn</div></div>
+      <div class="stat-block"><div class="stat-num">${f.avg != null ? fmtRate(f.avg) : 'n/a'}</div><div class="stat-label">Avg s/day</div></div>
+    </div>
+
+    <div class="divider"><span>Accuracy history</span></div>
+    ${readings.length ? `<p class="acc-synopsis">${escapeHtml(accSynopsis(readings))}</p>` : ''}
+    <ul class="history-list">${rows || `<li class="empty-state" style="display:block;">${w.shape === 'digital' ? 'Accuracy readings are for mechanical watches. This one is marked digital.' : 'No readings for this watch yet.'}</li>`}</ul>
+    ${readings.length > shown.length ? `<button type="button" class="btn-text more-btn" data-acc-more>Show all ${readings.length} readings</button>` : ''}
+    <button type="button" class="btn-secondary read-btn" data-read ${canTakeReading(w) ? '' : 'hidden'}>Take a reading</button>
+
+    <div class="card details-card">
+      <h2>Details</h2>
+      <label for="watchNameInput">Name</label>
+      <input type="text" id="watchNameInput" value="${escapeHtml(w.name)}" autocomplete="off" autocorrect="off" spellcheck="false">
+      <div class="ci-controls">
+        <div class="shape-toggle">
+          <button type="button" class="shape-btn ${w.shape === 'analog' ? 'active' : ''}" data-shape-set="analog" aria-label="Use analog icon">${miniShapeIcon('analog')}</button>
+          <button type="button" class="shape-btn ${w.shape === 'digital' ? 'active' : ''}" data-shape-set="digital" aria-label="Use digital icon">${miniShapeIcon('digital')}</button>
+        </div>
+        <input type="color" class="color-input" value="${escapeHtml(w.color)}" aria-label="Color for ${escapeHtml(w.name)}">
+        <button type="button" class="active-toggle ${w.active ? 'is-on' : ''}" data-toggle-active aria-pressed="${w.active ? 'true' : 'false'}">
+          <span class="switch"></span>
+          <span class="switch-label">In collection</span>
+        </button>
+      </div>
+      <p class="detail-note">The icon stands in when there's no photo. The color is used in Stats.</p>
+    </div>
+
+    <button type="button" class="btn-text danger remove-btn" data-remove-watch>Remove this watch</button>
+  `;
+}
+
+async function pickedPhoto(file){
+  const w = openWatchObj();
+  if(!w || !file) return;
+  const id = w.id;
+  toast('Adding photo…');
+  await photosReady;
+  let rec;
+  try{ rec = await makePhoto(file); }
+  catch(e){ toast("Couldn't read that image. Try a different photo.", true); return; }
+  const ok = await savePhoto(id, rec);
+  if(!ok){ toast("Couldn't save the photo. This device may be out of storage space.", true); return; }
+  holdPhoto(id, rec);
+  scheduleRender(() => { renderAll(); toast('Photo saved'); });
+}
+
+async function removePhoto(){
+  const w = openWatchObj();
+  if(!w || !photos[w.id]) return;
+  dropPhoto(w.id);
+  await deletePhoto(w.id);
+  scheduleRender(() => { renderAll(); toast('Photo removed'); });
+}
+
+function readWatch(name){
+  switchTab('accuracy');
+  const sel = document.getElementById('accWatch');
+  if(acc.phase === 'idle' && Array.from(sel.options).some(o => o.value === name)) sel.value = name;
+  document.getElementById('panel-accuracy').scrollTop = 0;
+}
+
+function initWatchView(){
+  const view = document.getElementById('watchView');
+  view.addEventListener('click', (e) => {
+    const w = openWatchObj();
+    if(!w) return;
+    const t = e.target;
+    if(t.closest('[data-watch-back]')){ closeWatch(); return; }
+    const photoBtn = t.closest('[data-photo]');
+    if(photoBtn){
+      photoBtn.blur();
+      if(photoBtn.dataset.photo === 'pick') document.getElementById('photoFile').click();
+      else removePhoto();
+      return;
+    }
+    const shapeBtn = t.closest('[data-shape-set]');
+    if(shapeBtn){ shapeBtn.blur(); setShape(w.name, shapeBtn.dataset.shapeSet); return; }
+    const toggleBtn = t.closest('[data-toggle-active]');
+    if(toggleBtn){ toggleBtn.blur(); setActive(w.name, !toggleBtn.classList.contains('is-on')); return; }
+    const delBtn = t.closest('[data-acc-del]');
+    if(delBtn){ delBtn.blur(); accDelete(delBtn.dataset.accDel); return; }
+    if(t.closest('[data-acc-more]')){ watchAccAll = true; renderWatchView(w); return; }
+    if(t.closest('[data-read]')){ readWatch(w.name); return; }
+    const removeBtn = t.closest('[data-remove-watch]');
+    if(removeBtn){
+      removeBtn.blur();
+      if(Date.now() - removeArmedAt < 5000){ removeArmedAt = 0; removeWatch(w.name); return; }
+      removeArmedAt = Date.now();
+      removeBtn.textContent = 'Tap again to remove. Its wear history is kept.';
+      setTimeout(() => {
+        if(removeBtn.isConnected && removeArmedAt && Date.now() - removeArmedAt >= 5000){
+          removeArmedAt = 0;
+          removeBtn.textContent = 'Remove this watch';
+        }
+      }, 5100);
+    }
+  });
+  view.addEventListener('change', (e) => {
+    const w = openWatchObj();
+    if(!w) return;
+    const t = e.target;
+    if(t.classList.contains('color-input')){ const val = t.value; t.blur(); setColor(w.name, val); }
+    if(t.id === 'watchNameInput'){ const val = t.value; t.blur(); renameWatch(w.name, val); }
+  });
+  view.addEventListener('keydown', (e) => {
+    if(e.target.id === 'watchNameInput' && e.key === 'Enter'){ e.preventDefault(); e.target.blur(); }
+  });
+  document.getElementById('photoFile').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if(file) pickedPhoto(file);
+  });
+  document.getElementById('collectionList').addEventListener('click', (e) => {
+    const row = e.target.closest('[data-open-watch]');
+    if(row){ row.blur(); openWatch(row.dataset.openWatch); }
+  });
+  document.getElementById('collSort').addEventListener('change', (e) => setCollSort(e.target.value));
 }
 
 /* ---------- render: stats ---------- */
@@ -1285,10 +1795,12 @@ async function addWatch(){
     return;
   }
   state.collection.push({
+    id: newWatchId(),
     name,
     color: PALETTE[state.collection.length % PALETTE.length],
     shape: isDigitalGuess(name) ? 'digital' : 'analog',
-    active: true
+    active: true,
+    added: new Date().toISOString()
   });
   await storageSet(KEYS.collection, state.collection);
   input.value = '';
@@ -1300,8 +1812,7 @@ async function renameWatch(oldName, newNameRaw){
   if(!newName || newName === oldName){ scheduleRender(renderCollection); return; }
   const dup = state.collection.some(w => w.name !== oldName && w.name.toLowerCase() === newName.toLowerCase());
   if(dup){
-    showCollectionMsg('Another watch already has that name', true);
-    scheduleRender(renderCollection);
+    scheduleRender(() => { renderCollection(); toast('Another watch already has that name', true); });
     return;
   }
   const w = state.collection.find(c => c.name === oldName);
@@ -1313,116 +1824,104 @@ async function renameWatch(oldName, newNameRaw){
   await storageSet(KEYS.collection, state.collection);
   await storageSet(KEYS.entries, state.entries);
   if(renamedReadings) await storageSet(KEYS.accuracy, state.accuracy);
-  showCollectionMsg('Renamed');
-  scheduleRender(renderAll);
+  scheduleRender(() => { renderAll(); toast('Renamed'); });
 }
 
 async function removeWatch(name){
-  state.collection = state.collection.filter(w => w.name !== name);
+  const w = watchByName(name);
+  const wasOpen = !!(w && w.id === openWatchId);
+  state.collection = state.collection.filter(c => c.name !== name);
+  if(wasOpen) openWatchId = null;
   await storageSet(KEYS.collection, state.collection);
-  scheduleRender(renderAll);
-  scheduleRender(renderAll);
+  if(w){ dropPhoto(w.id); deletePhoto(w.id); }
+  scheduleRender(() => {
+    renderAll();
+    if(wasOpen){ collScrollEl().scrollTop = collListScroll; toast('Removed ' + name); }
+  });
 }
 
-function findCollectionRow(name){
-  const rows = document.querySelectorAll('#collectionList li[data-watch-row]');
-  for(const r of rows){
-    if(r.dataset.watchRow === name) return r;
-  }
-  return null;
+// The watch page for this watch, if it is the one on screen.
+function watchViewFor(name){
+  const w = watchByName(name);
+  const view = document.getElementById('watchView');
+  return (w && w.id === openWatchId && view && !view.hidden) ? view : null;
 }
 
-function updateCollectionSummary(){
-  const el = document.getElementById('collectionCount');
-  if(!el) return;
-  const activeCount = state.collection.filter(w => w.active).length;
-  const inactiveCount = state.collection.length - activeCount;
-  el.textContent = activeCount + (activeCount === 1 ? ' watch' : ' watches') + (inactiveCount ? ` · ${inactiveCount} not owned` : '');
-}
-
-function replaceBadgeInRow(row, name, size){
-  if(!row) return;
-  const oldBadge = row.querySelector('.row-main .watch-badge');
-  if(!oldBadge) return;
-  const wrap = document.createElement('div');
-  wrap.innerHTML = watchBadge(name, size);
-  oldBadge.replaceWith(wrap.firstElementChild);
+// Redraw the photo / icon area of the open watch page without touching
+// the rest of it.
+function refreshWatchHero(name){
+  const view = watchViewFor(name);
+  const wrap = view && view.querySelector('#watchHeroWrap');
+  if(wrap) wrap.innerHTML = watchHeroHtml(watchByName(name));
 }
 
 async function setShape(name, shape){
-  const w = state.collection.find(c => c.name === name);
+  const w = watchByName(name);
   if(!w || w.shape === shape) return;
   w.shape = shape;
   await storageSet(KEYS.collection, state.collection);
   scheduleRender(() => {
-    const row = findCollectionRow(name);
-    if(row){
-      replaceBadgeInRow(row, name, 34);
-      row.querySelectorAll('.shape-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.shapeSet === shape);
-      });
+    const view = watchViewFor(name);
+    if(view){
+      view.querySelectorAll('.shape-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.shapeSet === shape));
+      refreshWatchHero(name);
+      const readBtn = view.querySelector('[data-read]');
+      if(readBtn) readBtn.hidden = !canTakeReading(w);
+      const empty = view.querySelector('.history-list .empty-state');
+      if(empty) empty.textContent = shape === 'digital' ? 'Accuracy readings are for mechanical watches. This one is marked digital.' : 'No readings for this watch yet.';
     }
-    renderHistoryBadgesFor(name);
+    renderToday();
+    renderAccuracy();
   });
 }
 
 async function setColor(name, hex){
-  const w = state.collection.find(c => c.name === name);
-  if(!w) return;
+  const w = watchByName(name);
+  if(!w || !HEX_COLOR.test(hex)) return;
   w.color = hex;
   await storageSet(KEYS.collection, state.collection);
   scheduleRender(() => {
-    const row = findCollectionRow(name);
-    if(row) replaceBadgeInRow(row, name, 34);
-    renderHistoryBadgesFor(name);
+    refreshWatchHero(name);
+    renderToday();
     renderStats();
-  });
-}
-
-function renderHistoryBadgesFor(name){
-  document.querySelectorAll('#historyList li').forEach(li => {
-    const span = li.querySelector('.hl-watch');
-    if(span && span.textContent === name) replaceBadgeInRow(li, name, 32);
+    renderAccuracy();
   });
 }
 
 async function setActive(name, active){
-  const w = state.collection.find(c => c.name === name);
+  const w = watchByName(name);
   if(!w) return;
   w.active = active;
   await storageSet(KEYS.collection, state.collection);
-  // Deliberately never touches #collectionList's innerHTML — only this one
-  // row's own class/tag change in place. Rebuilding the whole list here was
-  // what caused the scroll jump / list collapse when toggling near the bottom.
-  // This visual update always runs, regardless of whether the save succeeded —
-  // if storage is down, storageSet() shows a persistent banner instead of
-  // silently discarding your tap.
+  // Only the switch itself changes on the page. Nothing around it is
+  // rebuilt while the tap is still being handled.
   scheduleRender(() => {
-    const row = findCollectionRow(name);
-    if(row){
-      row.classList.toggle('inactive', !active);
-      const toggleBtn = row.querySelector('.active-toggle');
+    const view = watchViewFor(name);
+    if(view){
+      const toggleBtn = view.querySelector('.active-toggle');
       if(toggleBtn){
         toggleBtn.classList.toggle('is-on', active);
         toggleBtn.setAttribute('aria-pressed', active ? 'true' : 'false');
       }
-      const clRight = row.querySelector('.cl-right');
-      if(clRight){
-        let tag = clRight.querySelector('.owned-tag');
-        if(!active && !tag){
-          tag = document.createElement('span');
-          tag.className = 'owned-tag';
-          tag.textContent = 'Not owned';
-          clRight.insertBefore(tag, clRight.firstChild);
-        } else if(active && tag){
-          tag.remove();
-        }
-      }
+      const readBtn = view.querySelector('[data-read]');
+      if(readBtn) readBtn.hidden = !canTakeReading(w);
     }
     updateCollectionSummary();
     updateWatchOptions();
     renderStats();
+    renderAccuracy();
   });
+}
+
+let toastTimer = 0;
+function toast(text, isErr){
+  const el = document.getElementById('toast');
+  if(!el) return;
+  el.textContent = text;
+  el.classList.toggle('err', !!isErr);
+  el.hidden = !text;
+  clearTimeout(toastTimer);
+  if(text) toastTimer = setTimeout(() => { el.hidden = true; }, isErr ? 4500 : 2200);
 }
 
 function exportSpreadsheet(){
@@ -1441,16 +1940,16 @@ function exportSpreadsheet(){
 
   const countByName = {};
   state.entries.forEach(e => countByName[e.watch] = (countByName[e.watch]||0) + 1);
-  const collectionRows = [['Watch', 'In Collection', 'Times Worn', 'Icon Shape', 'Color']];
+  const collectionRows = [['Watch', 'In Collection', 'Times Worn', 'Icon Shape', 'Color', 'Added']];
   state.collection.slice().sort((a,b) => a.name.localeCompare(b.name)).forEach(w => {
-    collectionRows.push([w.name, w.active ? 'Yes' : 'No', countByName[w.name] || 0, w.shape, w.color]);
+    collectionRows.push([w.name, w.active ? 'Yes' : 'No', countByName[w.name] || 0, w.shape, w.color, w.added || '']);
   });
 
   const wb = XLSX.utils.book_new();
   const logSheet = XLSX.utils.aoa_to_sheet(logRows);
   logSheet['!cols'] = [{ wch: 12 }, { wch: 55 }];
   const collSheet = XLSX.utils.aoa_to_sheet(collectionRows);
-  collSheet['!cols'] = [{ wch: 55 }, { wch: 13 }, { wch: 11 }, { wch: 11 }, { wch: 9 }];
+  collSheet['!cols'] = [{ wch: 55 }, { wch: 13 }, { wch: 11 }, { wch: 11 }, { wch: 9 }, { wch: 26 }];
   XLSX.utils.book_append_sheet(wb, logSheet, 'Log');
   XLSX.utils.book_append_sheet(wb, collSheet, 'Collection');
 
@@ -1521,12 +2020,19 @@ async function importSpreadsheet(file){
     const row = collRows[i] || [];
     const name = row[0] ? String(row[0]).trim() : '';
     if(!name || existingNames.has(name)) continue;
-    state.collection.push({
+    const color = row[4] ? String(row[4]).trim() : '';
+    const watch = {
+      id: newWatchId(),
       name,
-      color: row[4] ? String(row[4]).trim() : PALETTE[state.collection.length % PALETTE.length],
+      color: HEX_COLOR.test(color) ? color : PALETTE[state.collection.length % PALETTE.length],
       shape: row[3] === 'digital' ? 'digital' : 'analog',
       active: row[1] === 'Yes'
-    });
+    };
+    if(row[5]){
+      const when = row[5] instanceof Date ? row[5] : new Date(String(row[5]).trim());
+      if(!isNaN(when.getTime())) watch.added = when.toISOString();
+    }
+    state.collection.push(watch);
     existingNames.add(name);
     addedWatches++;
   }
@@ -2360,13 +2866,13 @@ async function accSave(){
   accHideResult();
   await storageSet(KEYS.accuracy, state.accuracy);
   accMsg('Saved');
-  scheduleRender(renderAccuracy);
+  scheduleRender(() => { renderAccuracy(); renderCollection(); });
 }
 
 async function accDelete(id){
   state.accuracy = state.accuracy.filter(r => r.id !== id);
   await storageSet(KEYS.accuracy, state.accuracy);
-  scheduleRender(renderAccuracy);
+  scheduleRender(() => { renderAccuracy(); renderCollection(); });
 }
 
 function fmtReadingTime(ts){
@@ -2445,6 +2951,9 @@ function initAccuracy(){
 
 function switchTab(tab){
   if(tab !== 'accuracy') accCancel();     // never keep the microphone open on another tab
+  const current = document.querySelector('.tab-btn.active');
+  // Tapping Collection while a watch page is open goes back to the list.
+  if(tab === 'collection' && openWatchId && current && current.dataset.tab === 'collection'){ closeWatch(); return; }
   document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
   if(tab === 'accuracy') setTimeout(accDraw, 0);
@@ -2475,37 +2984,7 @@ async function init(){
       historyPage++; renderToday();
     }
   });
-  document.getElementById('collectionList').addEventListener('click', (e) => {
-    const removeBtn = e.target.closest('[data-remove]');
-    if(removeBtn){ removeBtn.blur(); removeWatch(removeBtn.dataset.remove); return; }
-    const shapeBtn = e.target.closest('[data-shape-set]');
-    if(shapeBtn){ shapeBtn.blur(); setShape(shapeBtn.dataset.watch, shapeBtn.dataset.shapeSet); return; }
-    const toggleBtn = e.target.closest('[data-toggle-active]');
-    if(toggleBtn){
-      const newState = !toggleBtn.classList.contains('is-on');
-      toggleBtn.blur();
-      setActive(toggleBtn.dataset.toggleActive, newState);
-    }
-  });
-  document.getElementById('collectionList').addEventListener('change', (e) => {
-    const target = e.target;
-    if(target.classList.contains('color-input')){
-      const val = target.value;
-      target.blur();
-      setColor(target.dataset.watch, val);
-    }
-    if(target.classList.contains('name-input')){
-      const val = target.value;
-      target.blur();
-      renameWatch(target.dataset.watch, val);
-    }
-  });
-  document.getElementById('collectionList').addEventListener('keydown', (e) => {
-    if(e.target.classList.contains('name-input') && e.key === 'Enter'){
-      e.preventDefault();
-      e.target.blur();
-    }
-  });
+  initWatchView();
   document.getElementById('exportBtn').addEventListener('click', exportSpreadsheet);
   document.getElementById('importBtn').addEventListener('click', () => {
     document.getElementById('importFile').click();
@@ -2519,6 +2998,11 @@ async function init(){
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
   initAccuracy();
+  // Only the panels themselves scroll. If anything ever nudges their
+  // container instead, put it straight back.
+  const panelsEl = document.querySelector('.panels');
+  panelsEl.addEventListener('scroll', () => { if(panelsEl.scrollTop !== 0) panelsEl.scrollTop = 0; });
+  photosReady = loadPhotos().then(n => { if(n) renderAll(); return n; }).catch(e => { console.error(e); return 0; });
 }
 
 init();
