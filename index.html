@@ -518,6 +518,17 @@
   .watch-stats .stat-block{padding:0.75rem 0.3rem;}
   .watch-stats .stat-num{font-size:1.05rem;white-space:nowrap;}
   .acc-synopsis{font-size:0.86rem;line-height:1.5;color:var(--text-muted);margin:0 0.1rem 0.5rem;}
+  .acc-verdict{font-size:0.86rem;line-height:1.5;margin:0 0.1rem 0.6rem;padding-left:0.75rem;border-left:3px solid var(--hairline-strong);color:var(--text);}
+  .acc-verdict.is-good{border-left-color:var(--lume);}
+  .acc-verdict.is-soft{border-left-color:#E0A165;}
+  .acc-verdict.is-bad{border-left-color:var(--danger);}
+  .crop-view{position:fixed;inset:0;z-index:30;background:rgba(10,11,13,0.94);display:flex;align-items:center;justify-content:center;padding:1.25rem;}
+  .crop-inner{width:100%;max-width:400px;}
+  .crop-inner h2{font-family:var(--font-display);font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin:0 0 0.9rem;}
+  .crop-frame{position:relative;width:100%;aspect-ratio:1 / 1;overflow:hidden;border-radius:var(--radius);border:1px solid var(--hairline-strong);background:#000;touch-action:none;cursor:grab;}
+  .crop-frame img{position:absolute;left:0;top:0;max-width:none;transform-origin:0 0;pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;}
+  #cropZoom{display:block;width:100%;margin:1.1rem 0 0.5rem;accent-color:var(--lume);}
+  .crop-hint{font-size:0.78rem;color:var(--text-faint);margin:0 0 1.1rem;text-align:center;}
   .more-btn{display:block;margin:0.3rem auto 0;}
   .read-btn{display:block;width:100%;margin-top:0.8rem;}
   .details-card{margin-top:1.5rem;}
@@ -720,6 +731,19 @@
     </section>
 
   </main>
+
+  <div id="cropView" class="crop-view" hidden>
+    <div class="crop-inner">
+      <h2>Crop photo</h2>
+      <div class="crop-frame" id="cropFrame"><img id="cropImg" alt="" draggable="false"></div>
+      <input type="range" id="cropZoom" min="1" max="5" step="0.01" value="1" aria-label="Zoom">
+      <p class="crop-hint">Drag to move. Pinch or use the slider to zoom.</p>
+      <div class="acc-actions">
+        <button type="button" id="cropUse" class="btn-primary">Use photo</button>
+        <button type="button" id="cropCancel" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
@@ -1290,30 +1314,132 @@ function shrinkSquare(source, sx, sy, side, out){
   }
 }
 
-// Takes whatever the photo library hands over, crops it to a centred
-// square and returns the two sizes to store.
-function makePhoto(file){
+// Reads the picked file into an image the crop screen can show.
+function loadPhotoFile(file){
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);
     const img = new Image();
-    const done = () => { try{ URL.revokeObjectURL(url); }catch(e){} };
-    img.onerror = () => { done(); reject(new Error('unreadable image')); };
+    img.onerror = () => { try{ URL.revokeObjectURL(url); }catch(e){} reject(new Error('unreadable image')); };
     img.onload = () => {
-      try{
-        const w = img.naturalWidth, h = img.naturalHeight;
-        if(!w || !h) throw new Error('empty image');
-        const side = Math.min(w, h);
-        const fullSize = Math.min(photoDb ? 900 : 420, side);
-        const fullCv = shrinkSquare(img, (w - side) / 2, (h - side) / 2, side, fullSize);
-        const thumbSize = Math.min(160, fullSize);
-        const thumbCv = thumbSize === fullSize ? fullCv : shrinkSquare(fullCv, 0, 0, fullSize, thumbSize);
-        const rec = { thumb: thumbCv.toDataURL('image/jpeg', 0.8), full: fullCv.toDataURL('image/jpeg', 0.82) };
-        if(!isPhotoData(rec.thumb) || !isPhotoData(rec.full)) throw new Error('could not encode image');
-        done(); resolve(rec);
-      }catch(e){ done(); reject(e); }
+      if(!img.naturalWidth || !img.naturalHeight){ try{ URL.revokeObjectURL(url); }catch(e){} reject(new Error('empty image')); return; }
+      resolve({ img, url });
     };
     img.src = url;
   });
+}
+
+// Cuts the chosen square out of the photo and returns the two sizes to store.
+function makePhoto(img, sx, sy, side){
+  const fullSize = Math.max(1, Math.min(photoDb ? 900 : 420, Math.round(side)));
+  const fullCv = shrinkSquare(img, sx, sy, side, fullSize);
+  const thumbSize = Math.min(160, fullSize);
+  const thumbCv = thumbSize === fullSize ? fullCv : shrinkSquare(fullCv, 0, 0, fullSize, thumbSize);
+  const rec = { thumb: thumbCv.toDataURL('image/jpeg', 0.8), full: fullCv.toDataURL('image/jpeg', 0.82) };
+  if(!isPhotoData(rec.thumb) || !isPhotoData(rec.full)) throw new Error('could not encode image');
+  return rec;
+}
+
+/* ---------- crop screen ---------- */
+// The photo sits behind a square window. Drag to move it, pinch or use the
+// slider to zoom. What shows in the window is what gets saved.
+const CROP_MAX_ZOOM = 5;
+const crop = { img: null, url: '', id: null, w: 0, h: 0, V: 0, min: 1, s: 1, x: 0, y: 0, pointers: new Map(), pinch: null };
+
+function cropApply(){
+  const el = document.getElementById('cropImg');
+  crop.x = Math.min(0, Math.max(crop.V - crop.w * crop.s, crop.x));
+  crop.y = Math.min(0, Math.max(crop.V - crop.h * crop.s, crop.y));
+  el.style.width = (crop.w * crop.s) + 'px';
+  el.style.height = (crop.h * crop.s) + 'px';
+  el.style.transform = 'translate(' + crop.x + 'px,' + crop.y + 'px)';
+  document.getElementById('cropZoom').value = String(crop.s / crop.min);
+}
+
+// Zoom while keeping the point (cx, cy) of the window over the same spot.
+function cropZoomTo(scale, cx, cy){
+  const ns = Math.min(crop.min * CROP_MAX_ZOOM, Math.max(crop.min, scale));
+  crop.x = cx - (cx - crop.x) * ns / crop.s;
+  crop.y = cy - (cy - crop.y) * ns / crop.s;
+  crop.s = ns;
+  cropApply();
+}
+
+function cropOpen(img, url, id){
+  crop.img = img; crop.url = url; crop.id = id;
+  crop.w = img.naturalWidth; crop.h = img.naturalHeight;
+  crop.pointers.clear(); crop.pinch = null;
+  document.getElementById('cropView').hidden = false;
+  document.getElementById('cropImg').src = url;
+  crop.V = document.getElementById('cropFrame').clientWidth;
+  crop.min = crop.V / Math.min(crop.w, crop.h);
+  crop.s = crop.min;
+  crop.x = (crop.V - crop.w * crop.s) / 2;
+  crop.y = (crop.V - crop.h * crop.s) / 2;
+  cropApply();
+}
+
+function cropClose(){
+  document.getElementById('cropView').hidden = true;
+  document.getElementById('cropImg').removeAttribute('src');
+  try{ URL.revokeObjectURL(crop.url); }catch(e){}
+  crop.img = null; crop.url = ''; crop.id = null;
+  crop.pointers.clear(); crop.pinch = null;
+}
+
+async function cropUse(){
+  if(!crop.img) return;
+  const id = crop.id;
+  let rec;
+  try{ rec = makePhoto(crop.img, -crop.x / crop.s, -crop.y / crop.s, crop.V / crop.s); }
+  catch(e){ cropClose(); toast("Couldn't read that image. Try a different photo.", true); return; }
+  cropClose();
+  await photosReady;
+  const ok = await savePhoto(id, rec);
+  if(!ok){ toast("Couldn't save the photo. This device may be out of storage space.", true); return; }
+  holdPhoto(id, rec);
+  scheduleRender(() => { renderAll(); toast('Photo saved'); });
+}
+
+function initCrop(){
+  const frame = document.getElementById('cropFrame');
+  const at = (e) => { const r = frame.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  frame.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    try{ frame.setPointerCapture(e.pointerId); }catch(err){}
+    crop.pointers.set(e.pointerId, at(e));
+    crop.pinch = null;
+  });
+  frame.addEventListener('pointermove', (e) => {
+    if(!crop.pointers.has(e.pointerId) || !crop.img) return;
+    const prev = crop.pointers.get(e.pointerId), now = at(e);
+    crop.pointers.set(e.pointerId, now);
+    if(crop.pointers.size === 1){
+      crop.x += now.x - prev.x; crop.y += now.y - prev.y;
+      cropApply();
+    } else if(crop.pointers.size === 2){
+      const p = Array.from(crop.pointers.values());
+      const dist = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
+      const mid = { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 };
+      if(crop.pinch && crop.pinch.dist > 0){
+        crop.x += mid.x - crop.pinch.mid.x; crop.y += mid.y - crop.pinch.mid.y;
+        cropZoomTo(crop.s * dist / crop.pinch.dist, mid.x, mid.y);
+      }
+      crop.pinch = { dist, mid };
+    }
+  });
+  const up = (e) => { crop.pointers.delete(e.pointerId); crop.pinch = null; };
+  frame.addEventListener('pointerup', up);
+  frame.addEventListener('pointercancel', up);
+  frame.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const p = at(e);
+    cropZoomTo(crop.s * (e.deltaY < 0 ? 1.08 : 1 / 1.08), p.x, p.y);
+  }, { passive: false });
+  document.getElementById('cropZoom').addEventListener('input', (e) => {
+    cropZoomTo(crop.min * Number(e.target.value), crop.V / 2, crop.V / 2);
+  });
+  document.getElementById('cropUse').addEventListener('click', cropUse);
+  document.getElementById('cropCancel').addEventListener('click', cropClose);
 }
 
 /* ---------- render: collection ---------- */
@@ -1482,6 +1608,45 @@ function canTakeReading(w){
   return w.active && w.shape !== 'digital';
 }
 
+// Rule-of-thumb read on a watch's health from its readings. These are the
+// usual hobbyist yardsticks for a modern mechanical watch, measured through
+// a phone microphone, so the wording stays measured.
+function accHealth(readings){
+  const n = readings.length;
+  const rates = readings.map(r => r.rate);
+  const avg = rates.reduce((s, v) => s + v, 0) / n, a = Math.abs(avg);
+  const spread = Math.max.apply(null, rates) - Math.min.apply(null, rates);
+  const beats = readings.map(r => r.beat).filter(b => typeof b === 'number' && isFinite(b));
+  const beat = beats.length ? tickMedian(beats) : null;
+
+  const bad = [], soft = [];
+  if(a > 30) bad.push((avg > 0 ? 'it gains' : 'it loses') + ' more than 30 seconds a day');
+  else if(a > 10) soft.push('the rate is outside the 10 seconds a day a well-adjusted watch holds');
+  if(spread > 40) bad.push('readings differ by ' + Math.round(spread) + ' seconds a day between positions');
+  else if(spread > 20) soft.push('readings differ by ' + Math.round(spread) + ' seconds a day between positions');
+  if(beat != null && beat > 1.5) bad.push('the beat error is high at ' + beat.toFixed(1) + ' ms');
+  else if(beat != null && beat > 0.8) soft.push('the beat error is a little high at ' + beat.toFixed(1) + ' ms');
+
+  const join = (list) => list.length > 1 ? list.slice(0, -1).join(', ') + ' and ' + list[list.length - 1] : list[0];
+  const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+  let tier, text;
+  if(bad.length){
+    tier = 'bad';
+    text = 'Worth taking to a watchmaker: ' + join(bad.concat(soft)) + '.';
+    if(avg > 60) text += ' A watch that suddenly runs this fast is often just magnetized, which is a quick fix.';
+  } else if(soft.length){
+    tier = 'soft';
+    text = 'Running, but not at its best: ' + join(soft) + '. No rush, but it would benefit from regulating at its next service.';
+  } else {
+    tier = 'good';
+    text = 'Running well and looks healthy.';
+  }
+  if(n < 3) text += tier === 'good'
+    ? ' A few more readings in other positions will confirm it.'
+    : ' Take a few more readings in other positions before acting on this.';
+  return { tier, text: cap(text) };
+}
+
 // A sentence or two summing up a watch's readings (newest first).
 function accSynopsis(readings){
   const n = readings.length;
@@ -1540,7 +1705,7 @@ function renderWatchView(w){
     </div>
 
     <div class="divider"><span>Accuracy history</span></div>
-    ${readings.length ? `<p class="acc-synopsis">${escapeHtml(accSynopsis(readings))}</p>` : ''}
+    ${readings.length ? (() => { const hl = accHealth(readings); return `<p class="acc-synopsis">${escapeHtml(accSynopsis(readings))}</p><p class="acc-verdict is-${hl.tier}">${escapeHtml(hl.text)}</p>`; })() : ''}
     <ul class="history-list">${rows || `<li class="empty-state" style="display:block;">${w.shape === 'digital' ? 'Accuracy readings are for mechanical watches. This one is marked digital.' : 'No readings for this watch yet.'}</li>`}</ul>
     ${readings.length > shown.length ? `<button type="button" class="btn-text more-btn" data-acc-more>Show all ${readings.length} readings</button>` : ''}
     <button type="button" class="btn-secondary read-btn" data-read ${canTakeReading(w) ? '' : 'hidden'}>Take a reading</button>
@@ -1570,16 +1735,10 @@ function renderWatchView(w){
 async function pickedPhoto(file){
   const w = openWatchObj();
   if(!w || !file) return;
-  const id = w.id;
-  toast('Adding photo…');
-  await photosReady;
-  let rec;
-  try{ rec = await makePhoto(file); }
+  let loaded;
+  try{ loaded = await loadPhotoFile(file); }
   catch(e){ toast("Couldn't read that image. Try a different photo.", true); return; }
-  const ok = await savePhoto(id, rec);
-  if(!ok){ toast("Couldn't save the photo. This device may be out of storage space.", true); return; }
-  holdPhoto(id, rec);
-  scheduleRender(() => { renderAll(); toast('Photo saved'); });
+  cropOpen(loaded.img, loaded.url, w.id);
 }
 
 async function removePhoto(){
@@ -2985,6 +3144,7 @@ async function init(){
     }
   });
   initWatchView();
+  initCrop();
   document.getElementById('exportBtn').addEventListener('click', exportSpreadsheet);
   document.getElementById('importBtn').addEventListener('click', () => {
     document.getElementById('importFile').click();
