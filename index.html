@@ -475,6 +475,51 @@
   }
   .tab-btn svg{stroke:currentColor;}
   .tab-btn.active{color:var(--lume);}
+
+  /* accuracy tab */
+  [hidden]{display:none !important;}
+  .acc-row{display:flex;gap:0.7rem;}
+  .acc-row > div{flex:1;min-width:0;}
+  .acc-scope{
+    position:relative;
+    height:96px;
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--surface-2);
+    border:1px solid var(--hairline);
+    margin-bottom:0.5rem;
+  }
+  .acc-scope canvas{display:block;width:100%;height:100%;}
+  .acc-scope-label, .acc-scope-time{
+    position:absolute;
+    top:0.4rem;
+    font-family:var(--font-mono);
+    font-size:0.62rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+  }
+  .acc-scope-label{left:0.6rem;}
+  .acc-scope-time{right:0.6rem;color:var(--text-muted);}
+  .acc-progress{height:3px;border-radius:2px;background:var(--surface-2);overflow:hidden;margin-bottom:0.8rem;}
+  .acc-progress div{height:100%;width:0;background:var(--lume);}
+  .acc-status{font-size:0.82rem;color:var(--text-muted);line-height:1.45;margin-bottom:0.9rem;min-height:3.6em;}
+  .btn-primary.is-stop{background:transparent;color:var(--danger);box-shadow:inset 0 0 0 1px var(--danger);}
+  #accMsg{margin-top:0.6rem;margin-bottom:0;min-height:0;line-height:1.4;}
+  .acc-result{border-top:1px solid var(--hairline);margin-top:1.1rem;padding-top:1.2rem;text-align:center;}
+  .acc-rate{font-family:var(--font-mono);font-size:2.7rem;font-weight:600;color:var(--lume);line-height:1;}
+  .acc-rate-unit{font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-faint);margin-top:0.4rem;}
+  .acc-verdict{font-size:0.85rem;color:var(--text-muted);line-height:1.45;margin-top:0.7rem;}
+  .acc-facts{display:flex;gap:0.5rem;margin:1rem 0;}
+  .acc-fact{flex:1;min-width:0;background:var(--surface-2);border:1px solid var(--hairline);border-radius:10px;padding:0.55rem 0.2rem;}
+  .acc-fact b{display:block;font-family:var(--font-mono);font-size:0.9rem;font-weight:600;color:var(--text);}
+  .acc-fact span{font-size:0.6rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-faint);}
+  .acc-actions{display:flex;gap:0.6rem;align-items:center;}
+  .acc-actions .btn-primary{flex:1;}
+  .acc-reading{display:flex;flex-direction:column;align-items:flex-end;gap:0.15rem;white-space:nowrap;flex-shrink:0;}
+  .acc-reading b{font-family:var(--font-mono);font-size:0.9rem;font-weight:600;color:var(--text);}
+  .acc-reading small{font-weight:500;font-size:0.66rem;color:var(--text-faint);margin-left:0.25rem;}
+  .acc-reading i{font-style:normal;font-size:0.68rem;color:var(--text-faint);}
 </style>
 </head>
 <body>
@@ -579,6 +624,72 @@
       </div>
     </section>
 
+    <section id="panel-accuracy" class="panel">
+      <div class="card">
+        <h2>Timegrapher</h2>
+        <label for="accWatch">Watch</label>
+        <select id="accWatch">
+          <option value="" disabled selected>Choose a watch</option>
+        </select>
+        <div class="acc-row">
+          <div>
+            <label for="accPos">Position</label>
+            <select id="accPos">
+              <option>Dial up</option>
+              <option>Dial down</option>
+              <option>Crown up</option>
+              <option>Crown down</option>
+              <option>Crown left</option>
+              <option>Crown right</option>
+            </select>
+          </div>
+          <div>
+            <label for="accBph">Beat rate</label>
+            <select id="accBph">
+              <option value="0">Auto detect</option>
+              <option value="18000">18,000 bph</option>
+              <option value="19800">19,800 bph</option>
+              <option value="21600">21,600 bph</option>
+              <option value="25200">25,200 bph</option>
+              <option value="28800">28,800 bph</option>
+              <option value="36000">36,000 bph</option>
+            </select>
+          </div>
+        </div>
+        <div class="acc-scope">
+          <canvas id="accCanvas" aria-label="Live trace of the sound the microphone hears"></canvas>
+          <span class="acc-scope-label">Tick trace</span>
+          <span class="acc-scope-time" id="accScopeTime"></span>
+        </div>
+        <div class="acc-progress"><div id="accProgressBar"></div></div>
+        <div class="acc-status" id="accStatus"></div>
+        <button id="accStartBtn" class="btn-primary">Start listening</button>
+        <div id="accMsg" class="hint"></div>
+        <div id="accResult" class="acc-result" hidden>
+          <div class="acc-rate" id="accRate"></div>
+          <div class="acc-rate-unit">seconds per day</div>
+          <div class="acc-verdict" id="accVerdict"></div>
+          <div class="acc-facts">
+            <div class="acc-fact"><b id="accFactBph"></b><span>Beat rate</span></div>
+            <div class="acc-fact"><b id="accFactBeat"></b><span>Beat error</span></div>
+            <div class="acc-fact"><b id="accFactSignal"></b><span>Signal</span></div>
+          </div>
+          <div class="acc-actions">
+            <button id="accSaveBtn" class="btn-primary">Save reading</button>
+            <button id="accDiscardBtn" class="btn-secondary">Discard</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="accAvgCard" hidden>
+        <h2>Average rate, s/day</h2>
+        <ul id="accAvgList" class="legend-list"></ul>
+      </div>
+
+      <div class="divider"><span>Readings</span></div>
+      <ul id="accList" class="history-list"></ul>
+    </section>
+
   </main>
 
   <nav class="tab-bar">
@@ -594,14 +705,18 @@
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.6" stroke-linecap="round"><path d="M4 16V11"/><path d="M10 16V4"/><path d="M16 16V8"/></svg>
       Stats
     </button>
+    <button class="tab-btn" data-tab="accuracy">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10.5h3l1.8-5 3 10 2.2-7.5 1.2 2.5H18"/></svg>
+      Accuracy
+    </button>
   </nav>
 
 </div>
 
 <script>
-const SEED = {"entries":[{"date":"2026-01-01","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-02","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-01-03","watch":"Ixdao Engineer"},{"date":"2026-01-04","watch":"Ixdao Engineer"},{"date":"2026-01-05","watch":"Ixdao Engineer"},{"date":"2026-01-06","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-07","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-08","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-09","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-10","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-11","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-12","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-13","watch":"Tudor Pelagos 39"},{"date":"2026-01-14","watch":"Tudor Pelagos 39"},{"date":"2026-01-15","watch":"Tudor Pelagos 39"},{"date":"2026-01-16","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-17","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-18","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-20","watch":"Ixdao Engineer"},{"date":"2026-01-21","watch":"Tudor Pelagos 39"},{"date":"2026-01-22","watch":"Casio G-Shock Mudmaster GWG-2000"},{"date":"2026-01-22","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-01-23","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-24","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-25","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-26","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-27","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-28","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-29","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-30","watch":"Tudor Pelagos 39"},{"date":"2026-01-31","watch":"Tudor Pelagos 39"},{"date":"2026-02-01","watch":"Tudor Pelagos 39"},{"date":"2026-02-02","watch":"Tudor Pelagos 39"},{"date":"2026-02-03","watch":"Seiko Speedtimer Prospex SPB513"},{"date":"2026-02-04","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-05","watch":"Seiko Speedtimer Prospex SPB513"},{"date":"2026-02-06","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-07","watch":"Seiko Speedtimer Prospex SPB513"},{"date":"2026-02-08","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-09","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-10","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-11","watch":"Tudor Pelagos 39"},{"date":"2026-02-12","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-13","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-14","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-15","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-16","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-17","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-02-18","watch":"Tudor Pelagos 39"},{"date":"2026-02-19","watch":"Tudor Pelagos 39"},{"date":"2026-02-20","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-02-21","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-02-22","watch":"Tudor Pelagos 39"},{"date":"2026-02-23","watch":"Tudor Pelagos 39"},{"date":"2026-02-24","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-25","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-26","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-27","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-28","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-01","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-02","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-03","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-04","watch":"IWC Ingenieur IW322701"},{"date":"2026-03-05","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-06","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-07","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-08","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-09","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-10","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-11","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-12","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-13","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-14","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-15","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-16","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-17","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-18","watch":"Casio G-Shock Mudmaster GWG-2000"},{"date":"2026-03-19","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-20","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-21","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-22","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-23","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-24","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-25","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-26","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-27","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-28","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-29","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-30","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-31","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-01","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-02","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-02","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-04-03","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-04","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-04-05","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-06","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-07","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-08","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-09","watch":"Tudor Alinghi Red Bull Pelagos FXD"},{"date":"2026-04-10","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-11","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-04-12","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-13","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-14","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-15","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-15","watch":"Formex Essence Leggera"},{"date":"2026-04-16","watch":"Formex Essence Leggera"},{"date":"2026-04-17","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-18","watch":"Formex Essence Leggera"},{"date":"2026-04-18","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-19","watch":"Casio G-Shock Mudmaster GWG-2000"},{"date":"2026-04-20","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-21","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-22","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-23","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-24","watch":"Formex Essence Leggera"},{"date":"2026-04-25","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-26","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-27","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-28","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-29","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-30","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-01","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-02","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-03","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-04","watch":"Formex Essence Leggera"},{"date":"2026-05-05","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-06","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-07","watch":"Formex Essence Leggera"},{"date":"2026-05-08","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-05-09","watch":"Formex Essence Leggera"},{"date":"2026-05-09","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-10","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-11","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-12","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-05-13","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-14","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-15","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-16","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-17","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-05-18","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-05-19","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-20","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-05-21","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-22","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-23","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-24","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-25","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-26","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-27","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-05-28","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-05-29","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-30","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-31","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-01","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-02","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-03","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-04","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-05","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-06","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-07","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-08","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-09","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-09","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-10","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-11","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-12","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-13","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-14","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-15","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-16","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-16","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-17","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-18","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-19","watch":"Seiko Limited Edition Prospex SPB149J1"},{"date":"2026-06-19","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-20","watch":"Seiko Limited Edition Prospex SPB149J1"},{"date":"2026-06-22","watch":"Seiko Limited Edition Prospex SPB149J1"},{"date":"2026-06-23","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-24","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-25","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-26","watch":"Seiko Limited Edition Prospex SPB149J1"},{"date":"2026-06-27","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-28","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-06-29","watch":"Seiko Limited Edition Prospex SPB149J1"},{"date":"2026-06-30","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-01","watch":"Seiko Limited Edition Prospex SPB149J1"},{"date":"2026-07-02","watch":"IWC Mark XVII IW326501"},{"date":"2026-07-03","watch":"IWC Mark XVII IW326501"},{"date":"2026-07-04","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-07-05","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-06","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-06","watch":"Seiko Limited Edition Prospex SPB149J1"},{"date":"2026-07-07","watch":"Seiko Limited Edition Prospex SPB149J1"},{"date":"2026-07-08","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-09","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-10","watch":"Seiko Limited Edition Prospex SPB149J1"},{"date":"2026-07-10","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-07-11","watch":"Seiko Prospex GMT SPB519J1"},{"date":"2026-07-12","watch":"Seiko Limited Edition Prospex SPB149J1"},{"date":"2026-07-13","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-14","watch":"IWC Mark XVII IW326501"},{"date":"2026-07-15","watch":"Seiko Limited Edition Prospex SPB149J1"},{"date":"2026-07-16","watch":"Seiko Limited Edition Prospex SPB149J1"}],"collection":[{"name":"Casio G-Shock Custom Blue GMW-B5000","color":"#C6EE7E","shape":"digital","active":true},{"name":"Casio G-Shock Custom Silver GMW-B5000","color":"#6FB8A6","shape":"digital","active":true},{"name":"Casio G-Shock GMW-B5000TVA","color":"#6C9CB8","shape":"digital","active":false},{"name":"Casio G-Shock Mudmaster GWG-2000","color":"#7FA8E0","shape":"digital","active":false},{"name":"Formex Essence Leggera","color":"#9d9ba1","shape":"analog","active":false},{"name":"IWC Chronograph 41 Top Gun IW389401","color":"#D98080","shape":"analog","active":false},{"name":"IWC Ingenieur 40 Blue IW328907","color":"#B090D9","shape":"analog","active":true},{"name":"IWC Ingenieur IW322701","color":"#D98BC0","shape":"analog","active":false},{"name":"IWC Mark XVII IW326501","color":"#716581","shape":"analog","active":true},{"name":"Ixdao Engineer","color":"#E0A165","shape":"analog","active":false},{"name":"Seiko Limited Edition Prospex SPB149J1","color":"#C7CE6A","shape":"analog","active":true},{"name":"Seiko Prospex GMT SPB519J1","color":"#9BC77E","shape":"analog","active":true},{"name":"Seiko Speedtimer Prospex SPB513","color":"#D9C36A","shape":"analog","active":false},{"name":"Tudor Alinghi Red Bull Pelagos FXD","color":"#5FAF8A","shape":"analog","active":false},{"name":"Tudor Pelagos 39","color":"#5FC2C9","shape":"analog","active":false}]};
+const SEED = {"entries":[{"date":"2026-01-01","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-02","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-01-03","watch":"Ixdao Engineer"},{"date":"2026-01-04","watch":"Ixdao Engineer"},{"date":"2026-01-05","watch":"Ixdao Engineer"},{"date":"2026-01-06","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-07","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-08","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-09","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-10","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-11","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-12","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-13","watch":"Tudor Pelagos 39"},{"date":"2026-01-14","watch":"Tudor Pelagos 39"},{"date":"2026-01-15","watch":"Tudor Pelagos 39"},{"date":"2026-01-16","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-17","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-18","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-20","watch":"Ixdao Engineer"},{"date":"2026-01-21","watch":"Tudor Pelagos 39"},{"date":"2026-01-22","watch":"Casio G-Shock Mudmaster GWG-2000"},{"date":"2026-01-22","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-01-23","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-24","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-01-25","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-26","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-27","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-28","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-29","watch":"IWC Ingenieur IW322701"},{"date":"2026-01-30","watch":"Tudor Pelagos 39"},{"date":"2026-01-31","watch":"Tudor Pelagos 39"},{"date":"2026-02-01","watch":"Tudor Pelagos 39"},{"date":"2026-02-02","watch":"Tudor Pelagos 39"},{"date":"2026-02-03","watch":"Seiko Speedtimer Prospex SPB513"},{"date":"2026-02-04","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-05","watch":"Seiko Speedtimer Prospex SPB513"},{"date":"2026-02-06","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-07","watch":"Seiko Speedtimer Prospex SPB513"},{"date":"2026-02-08","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-09","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-10","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-11","watch":"Tudor Pelagos 39"},{"date":"2026-02-12","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-13","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-14","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-15","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-16","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-17","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-02-18","watch":"Tudor Pelagos 39"},{"date":"2026-02-19","watch":"Tudor Pelagos 39"},{"date":"2026-02-20","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-02-21","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-02-22","watch":"Tudor Pelagos 39"},{"date":"2026-02-23","watch":"Tudor Pelagos 39"},{"date":"2026-02-24","watch":"IWC Ingenieur IW322701"},{"date":"2026-02-25","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-26","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-27","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-02-28","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-01","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-02","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-03","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-04","watch":"IWC Ingenieur IW322701"},{"date":"2026-03-05","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-06","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-07","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-08","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-09","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-10","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-11","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-12","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-13","watch":"IWC Chronograph 41 Top Gun IW389401"},{"date":"2026-03-14","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-15","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-16","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-17","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-03-18","watch":"Casio G-Shock Mudmaster GWG-2000"},{"date":"2026-03-19","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-20","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-21","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-22","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-23","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-03-24","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-25","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-26","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-27","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-28","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-29","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-30","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-03-31","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-01","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-02","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-02","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-04-03","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-04","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-04-05","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-06","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-07","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-08","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-09","watch":"Tudor Alinghi Red Bull Pelagos FXD"},{"date":"2026-04-10","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-11","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-04-12","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-13","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-14","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-15","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-15","watch":"Formex Essence Leggera"},{"date":"2026-04-16","watch":"Formex Essence Leggera"},{"date":"2026-04-17","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-18","watch":"Formex Essence Leggera"},{"date":"2026-04-18","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-19","watch":"Casio G-Shock Mudmaster GWG-2000"},{"date":"2026-04-20","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-21","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-22","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-23","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-04-24","watch":"Formex Essence Leggera"},{"date":"2026-04-25","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-26","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-27","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-28","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-29","watch":"IWC Mark XVII IW326501"},{"date":"2026-04-30","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-01","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-02","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-03","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-04","watch":"Formex Essence Leggera"},{"date":"2026-05-05","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-06","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-07","watch":"Formex Essence Leggera"},{"date":"2026-05-08","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-05-09","watch":"Formex Essence Leggera"},{"date":"2026-05-09","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-10","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-11","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-12","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-05-13","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-14","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-15","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-16","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-17","watch":"Casio G-Shock GMW-B5000TVA"},{"date":"2026-05-18","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-05-19","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-20","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-05-21","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-22","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-23","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-24","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-25","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-26","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-27","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-05-28","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-05-29","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-30","watch":"IWC Mark XVII IW326501"},{"date":"2026-05-31","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-01","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-02","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-03","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-04","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-05","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-06","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-07","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-08","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-09","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-09","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-10","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-11","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-12","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-13","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-14","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-15","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-16","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-16","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-17","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-18","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-19","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-06-19","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-20","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-06-22","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-06-23","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-06-24","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-25","watch":"IWC Mark XVII IW326501"},{"date":"2026-06-26","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-06-27","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-28","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-06-29","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-06-30","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-01","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-02","watch":"IWC Mark XVII IW326501"},{"date":"2026-07-03","watch":"IWC Mark XVII IW326501"},{"date":"2026-07-04","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-07-05","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-06","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-06","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-07","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-08","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-09","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-10","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-10","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-07-11","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-07-12","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-13","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-14","watch":"IWC Mark XVII IW326501"},{"date":"2026-07-15","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-16","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-17","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-18","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-07-19","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-20","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-07-20","watch":"Sinn 144 St Sa"},{"date":"2026-07-21","watch":"Sinn 144 St Sa"},{"date":"2026-07-22","watch":"Sinn 144 St Sa"},{"date":"2026-07-23","watch":"Sinn 144 St Sa"},{"date":"2026-07-24","watch":"Sinn 144 St Sa"},{"date":"2026-07-25","watch":"Sinn 144 St Sa"},{"date":"2026-07-26","watch":"Sinn 144 St Sa"},{"date":"2026-07-27","watch":"Sinn 144 St Sa"},{"date":"2026-07-28","watch":"Sinn 144 St Sa"},{"date":"2026-07-29","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-30","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-07-31","watch":"Sinn 144 St Sa"},{"date":"2026-07-31","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-08-01","watch":"Sinn 144 St Sa"},{"date":"2026-08-02","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-08-03","watch":"Sinn 144 St Sa"},{"date":"2026-08-04","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-08-05","watch":"Sinn 144 St Sa"},{"date":"2026-08-06","watch":"Casio G-Shock Custom Silver GMW-B5000"},{"date":"2026-08-07","watch":"Sinn 144 St Sa"},{"date":"2026-08-08","watch":"Sinn 144 St Sa"},{"date":"2026-08-09","watch":"Sinn 144 St Sa"},{"date":"2026-08-10","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-08-11","watch":"Sinn 144 St Sa"},{"date":"2026-08-12","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-08-13","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-08-13","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-08-14","watch":"Sinn 144 St Sa"},{"date":"2026-08-15","watch":"Sinn 144 St Sa"},{"date":"2026-08-16","watch":"Sinn 144 St Sa"},{"date":"2026-08-17","watch":"Sinn 144 St Sa"},{"date":"2026-08-18","watch":"Sinn 144 St Sa"},{"date":"2026-08-18","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-08-19","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-08-20","watch":"Sinn 144 St Sa"},{"date":"2026-08-21","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-08-22","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-08-23","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-08-24","watch":"Sinn 144 St Sa"},{"date":"2026-08-25","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-08-26","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-08-27","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-08-28","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-08-29","watch":"Thorn Pelagos 39"},{"date":"2026-08-30","watch":"Pagani Superocean"},{"date":"2026-08-31","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-09-01","watch":"Sinn 144 St Sa"},{"date":"2026-09-02","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-03","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-04","watch":"Thorn Pelagos 39"},{"date":"2026-09-05","watch":"Sinn 144 St Sa"},{"date":"2026-09-06","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-09-07","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-08","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-09","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-10","watch":"Thorn Pelagos 39"},{"date":"2026-09-11","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-09-11","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-12","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-12","watch":"Seiko Prospex GMT SPB519"},{"date":"2026-09-13","watch":"Pagani Superocean"},{"date":"2026-09-14","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-15","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-16","watch":"Sinn 144 St Sa"},{"date":"2026-09-17","watch":"Sinn 144 St Sa"},{"date":"2026-09-18","watch":"Thorn Pelagos 39"},{"date":"2026-09-18","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-19","watch":"Thorn Pelagos 39"},{"date":"2026-09-20","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-21","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-22","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-09-23","watch":"Sinn 144 St Sa"},{"date":"2026-09-24","watch":"Sinn 144 St Sa"},{"date":"2026-09-25","watch":"Sinn 144 St Sa"},{"date":"2026-09-26","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-27","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-28","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-09-29","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-09-30","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-10-01","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-03","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-10-04","watch":"Casio G-Shock Custom Blue GMW-B5000"},{"date":"2026-10-04","watch":"Sinn 144 St Sa"},{"date":"2026-10-05","watch":"Sinn 144 St Sa"},{"date":"2026-10-06","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-07","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-08","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-09","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-10","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-11","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-12","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-13","watch":"Thorn Pelagos 39"},{"date":"2026-10-14","watch":"Pagani Superocean"},{"date":"2026-10-15","watch":"Sinn 144 St Sa"},{"date":"2026-10-16","watch":"Sinn 144 St Sa"},{"date":"2026-10-17","watch":"Sinn 144 St Sa"},{"date":"2026-10-18","watch":"Sinn 144 St Sa"},{"date":"2026-10-19","watch":"Sinn 144 St Sa"},{"date":"2026-10-20","watch":"Sinn 144 St Sa"},{"date":"2026-10-21","watch":"Sinn 144 St Sa"},{"date":"2026-10-22","watch":"Sinn 144 St Sa"},{"date":"2026-10-23","watch":"Sinn 144 St Sa"},{"date":"2026-10-24","watch":"Sinn 144 St Sa"},{"date":"2026-10-25","watch":"Sinn 144 St Sa"},{"date":"2026-10-26","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-27","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-28","watch":"Thorn Pelagos 39"},{"date":"2026-10-29","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-10-30","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-10-31","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-11-01","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-11-02","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-11-03","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-11-04","watch":"Pagani Superocean"},{"date":"2026-11-05","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-11-06","watch":"IWC Ingenieur 40 Blue IW328907"},{"date":"2026-11-07","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-11-08","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-11-09","watch":"Seiko Limited Edition Prospex SPB149"},{"date":"2026-11-10","watch":"Sinn 144 St Sa"},{"date":"2026-11-11","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-11-12","watch":"Seiko 5 GMT Field SSK023"},{"date":"2026-11-12","watch":"San Martin Pepsi GMT SN0109"}],"collection":[{"name":"Casio G-Shock Custom Blue GMW-B5000","color":"#00374a","shape":"digital","active":true},{"name":"Casio G-Shock Custom Silver GMW-B5000","color":"#858585","shape":"digital","active":true},{"name":"Casio G-Shock GMW-B5000TVA","color":"#6C9CB8","shape":"digital","active":false},{"name":"Casio G-Shock Mudmaster GWG-2000","color":"#7FA8E0","shape":"digital","active":false},{"name":"Formex Essence Leggera","color":"#9d9ba1","shape":"analog","active":false},{"name":"IWC Chronograph 41 Top Gun IW389401","color":"#D98080","shape":"analog","active":false},{"name":"IWC Ingenieur 40 Blue IW328907","color":"#0042a9","shape":"analog","active":true},{"name":"IWC Ingenieur IW322701","color":"#D98BC0","shape":"analog","active":false},{"name":"IWC Mark XVII IW326501","color":"#716581","shape":"analog","active":false},{"name":"Ixdao Engineer","color":"#E0A165","shape":"analog","active":false},{"name":"Pagani Superocean","color":"#3a87fe","shape":"analog","active":true},{"name":"San Martin Pepsi GMT SN0109","color":"#5c0701","shape":"analog","active":true},{"name":"Seiko 5 GMT Field SSK023","color":"#333333","shape":"analog","active":true},{"name":"Seiko Limited Edition Prospex SPB149","color":"#011d57","shape":"analog","active":true},{"name":"Seiko Prospex GMT SPB519","color":"#cbf0ff","shape":"analog","active":true},{"name":"Sinn 144 St Sa","color":"#ff6250","shape":"analog","active":true},{"name":"Thorn Pelagos 39","color":"#f4a4c0","shape":"analog","active":true},{"name":"Tudor Pelagos 39","color":"#5FC2C9","shape":"analog","active":false}]};
 
-const KEYS = { entries: 'wristory:entries', collection: 'wristory:collection' };
+const KEYS = { entries: 'wristory:entries', collection: 'wristory:collection', accuracy: 'wristory:accuracy' };
 
 const PALETTE = [
   "#C6EE7E","#6FB8A6","#6C9CB8","#7FA8E0","#8D7BC9","#B090D9",
@@ -610,7 +725,7 @@ const PALETTE = [
   "#A4A9F4","#84A98C"
 ];
 
-let state = { entries: [], collection: [] };
+let state = { entries: [], collection: [], accuracy: [] };
 
 function uid(){ return 'e' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 
@@ -667,7 +782,8 @@ function scheduleStorageRetry(){
     pendingRetry = null;
     const okEntries = await rawStorageSet(KEYS.entries, state.entries);
     const okCollection = await rawStorageSet(KEYS.collection, state.collection);
-    if(okEntries && okCollection){
+    const okAccuracy = await rawStorageSet(KEYS.accuracy, state.accuracy);
+    if(okEntries && okCollection && okAccuracy){
       hideStorageWarning();
     } else {
       scheduleStorageRetry();
@@ -727,6 +843,8 @@ async function loadState(){
   const { collection, migrated } = normalizeCollection(rawCollection);
   state.entries = entries;
   state.collection = collection;
+  const accuracy = await storageGet(KEYS.accuracy);
+  state.accuracy = Array.isArray(accuracy) ? accuracy : [];
   if(needsSave || migrated){
     await storageSet(KEYS.entries, state.entries);
     await storageSet(KEYS.collection, state.collection);
@@ -1107,6 +1225,7 @@ function renderAll(){
   renderToday();
   renderCollection();
   renderStats();
+  renderAccuracy();
 }
 
 /* ---------- actions ---------- */
@@ -1189,8 +1308,11 @@ async function renameWatch(oldName, newNameRaw){
   if(!w){ scheduleRender(renderCollection); return; }
   w.name = newName;
   state.entries.forEach(e => { if(e.watch === oldName) e.watch = newName; });
+  let renamedReadings = false;
+  state.accuracy.forEach(r => { if(r.watch === oldName){ r.watch = newName; renamedReadings = true; } });
   await storageSet(KEYS.collection, state.collection);
   await storageSet(KEYS.entries, state.entries);
+  if(renamedReadings) await storageSet(KEYS.accuracy, state.accuracy);
   showCollectionMsg('Renamed');
   scheduleRender(renderAll);
 }
@@ -1332,6 +1454,14 @@ function exportSpreadsheet(){
   XLSX.utils.book_append_sheet(wb, logSheet, 'Log');
   XLSX.utils.book_append_sheet(wb, collSheet, 'Collection');
 
+  const accRows = [['Measured At', 'Watch', 'Rate (s/day)', 'Beat Rate (bph)', 'Beat Error (ms)', 'Position', 'Signal']];
+  state.accuracy.slice().sort((a,b) => String(a.ts).localeCompare(String(b.ts))).forEach(r => {
+    accRows.push([r.ts, r.watch, r.rate, r.bph || '', r.beat == null ? '' : r.beat, r.pos || '', r.q == null ? '' : r.q]);
+  });
+  const accSheet = XLSX.utils.aoa_to_sheet(accRows);
+  accSheet['!cols'] = [{ wch: 26 }, { wch: 55 }, { wch: 13 }, { wch: 16 }, { wch: 16 }, { wch: 13 }, { wch: 8 }];
+  XLSX.utils.book_append_sheet(wb, accSheet, 'Accuracy');
+
   XLSX.writeFile(wb, `WristCheck-export-${todayStr()}.xlsx`);
   msg.textContent = 'Downloaded';
   setTimeout(() => { if(msg.textContent === 'Downloaded') msg.textContent = ''; }, 2500);
@@ -1417,26 +1547,907 @@ async function importSpreadsheet(file){
     addedEntries++;
   }
 
-  if(addedEntries === 0 && addedWatches === 0){
+  // Accuracy readings (older exports don't have this tab, which is fine).
+  // Same rule: add what's missing, never touch what's already here.
+  let addedReadings = 0;
+  const accSheet = wb.Sheets['Accuracy'];
+  if(accSheet){
+    const accRows = XLSX.utils.sheet_to_json(accSheet, { header: 1 });
+    const seen = new Set(state.accuracy.map(r => r.ts + '|' + r.watch));
+    for(let i = 1; i < accRows.length; i++){
+      const row = accRows[i] || [];
+      if(!row[0] || !row[1]) continue;
+      const when = row[0] instanceof Date ? row[0] : new Date(String(row[0]).trim());
+      const rate = Number(row[2]);
+      if(isNaN(when.getTime()) || row[2] === '' || row[2] == null || !isFinite(rate)) continue;
+      const ts = when.toISOString();
+      const watch = String(row[1]).trim();
+      if(seen.has(ts + '|' + watch)) continue;
+      const beat = row[4] === '' || row[4] == null ? null : Number(row[4]);
+      const q = row[6] === '' || row[6] == null ? null : Number(row[6]);
+      state.accuracy.push({
+        id: uid(), ts, watch, rate,
+        bph: Number(row[3]) || 0,
+        beat: beat == null || !isFinite(beat) ? null : beat,
+        pos: row[5] ? String(row[5]).trim() : '',
+        q: q == null || !isFinite(q) ? null : q
+      });
+      seen.add(ts + '|' + watch);
+      addedReadings++;
+    }
+  }
+
+  if(addedEntries === 0 && addedWatches === 0 && addedReadings === 0){
     msg.textContent = 'Nothing new in that file — already up to date.';
     return;
   }
 
   await storageSet(KEYS.entries, state.entries);
   await storageSet(KEYS.collection, state.collection);
+  if(addedReadings) await storageSet(KEYS.accuracy, state.accuracy);
 
   const parts = [];
   if(addedEntries) parts.push(`${addedEntries} new ${addedEntries === 1 ? 'entry' : 'entries'}`);
   if(addedWatches) parts.push(`${addedWatches} new ${addedWatches === 1 ? 'watch' : 'watches'}`);
-  msg.textContent = `Imported ${parts.join(' and ')}.`;
+  if(addedReadings) parts.push(`${addedReadings} accuracy ${addedReadings === 1 ? 'reading' : 'readings'}`);
+  msg.textContent = `Imported ${parts.length > 2 ? parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1] : parts.join(' and ')}.`;
 
   historyPage = 0;
   scheduleRender(renderAll);
 }
 
+/* === TICK-DSP START === */
+// Pocket timegrapher maths. Nothing in this block touches the page or the
+// microphone: it takes numbers in and gives numbers back, so it can be
+// tested against simulated watches with a known rate.
+
+const BPH_OPTIONS = [18000, 19800, 21600, 25200, 28800, 36000];
+
+// Front end, fed raw microphone samples. A high-pass filter throws away
+// room noise, voices and hum (a tick lives well above 2.5 kHz), then the
+// signal is boiled down to a loudness envelope at roughly 8,000 points per
+// second. Written to be self-contained because its source text is also
+// used to build the audio-thread worklet.
+function TickFrontEnd(sampleRate){
+  var fc = 2500, q = 0.7071;
+  var w0 = 2 * Math.PI * fc / sampleRate, cs = Math.cos(w0), al = Math.sin(w0) / (2 * q);
+  var a0 = 1 + al;
+  this.b0 = (1 + cs) / 2 / a0; this.b1 = -(1 + cs) / a0; this.b2 = (1 + cs) / 2 / a0;
+  this.a1 = -2 * cs / a0; this.a2 = (1 - al) / a0;
+  this.z = [0, 0, 0, 0];
+  this.decim = Math.max(1, Math.round(sampleRate / 8000));
+  this.envRate = sampleRate / this.decim;
+  this.acc = 0; this.n = 0;
+  this.out = new Float32Array(512); this.outN = 0;
+  this.onchunk = null;
+}
+TickFrontEnd.prototype.process = function(input){
+  var b0 = this.b0, b1 = this.b1, b2 = this.b2, a1 = this.a1, a2 = this.a2;
+  var z = this.z, z1 = z[0], z2 = z[1], z3 = z[2], z4 = z[3];
+  var acc = this.acc, n = this.n, D = this.decim;
+  for(var i = 0; i < input.length; i++){
+    var x = input[i];
+    var y = b0 * x + z1; z1 = b1 * x - a1 * y + z2; z2 = b2 * x - a2 * y;
+    var v = b0 * y + z3; z3 = b1 * y - a1 * v + z4; z4 = b2 * y - a2 * v;
+    acc += v * v; n++;
+    if(n === D){
+      this.out[this.outN++] = acc / D; acc = 0; n = 0;
+      if(this.outN === this.out.length){
+        var c = this.out; this.out = new Float32Array(512); this.outN = 0;
+        if(this.onchunk) this.onchunk(c);
+      }
+    }
+  }
+  z[0] = z1; z[1] = z2; z[2] = z3; z[3] = z4; this.acc = acc; this.n = n;
+};
+
+function tickPercentile(arr, p){
+  const step = Math.max(1, Math.floor(arr.length / 4000));
+  const s = [];
+  for(let i = 0; i < arr.length; i += step) s.push(arr[i]);
+  s.sort((a, b) => a - b);
+  return s[Math.min(s.length - 1, Math.floor(p * s.length))];
+}
+
+function tickMedian(list){
+  if(!list.length) return 0;
+  const s = list.slice().sort((a, b) => a - b);
+  const m = s.length >> 1;
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
+// Which beat rate is this watch running at? Checks the standard rates by
+// asking how well the sound repeats one beat later. It is judged in
+// 3-second windows with the odd ones thrown out, so one loud bump can't
+// fake a rhythm, and only a sharp repeat counts (a bump repeats "a bit" at
+// every spacing).
+function tickDetectBph(amp, envRate, onlyBph){
+  const n = amp.length;
+  const dec = Math.max(1, Math.round(envRate / 2000));
+  const m = Math.floor(n / dec);
+  if(m < 2000) return null;
+  const raw = new Float32Array(m);
+  for(let i = 0; i < m; i++){
+    let s = 0;
+    for(let j = 0; j < dec; j++) s += amp[i * dec + j];
+    raw[i] = s / dec;
+  }
+  const x = new Float32Array(m);
+  for(let i = 0; i < m; i++){
+    const a = raw[i > 0 ? i - 1 : 0], b = raw[i], c = raw[i < m - 1 ? i + 1 : m - 1];
+    x[i] = (a + b + c) / 3;
+  }
+  const r2 = envRate / dec;
+  const winLen = Math.round(r2 * 3), nWin = Math.floor(m / winLen);
+  if(nWin < 2) return null;
+  const wins = [];
+  for(let w = 0; w < nWin; w++){
+    const o = w * winLen;
+    let mean = 0;
+    for(let i = 0; i < winLen; i++) mean += x[o + i];
+    mean /= winLen;
+    let energy = 0;
+    for(let i = 0; i < winLen; i++){ x[o + i] -= mean; energy += x[o + i] * x[o + i]; }
+    wins.push({ o, energy });
+  }
+  const trim = Math.floor(nWin * 0.2);
+  const vals = new Array(nWin);
+  function repeatAt(lag){       // how strongly the sound repeats at this spacing
+    for(let w = 0; w < nWin; w++){
+      const o = wins[w].o;
+      let s = 0;
+      for(let i = 0; i + lag < winLen; i++) s += x[o + i] * x[o + i + lag];
+      vals[w] = wins[w].energy > 0 ? s / wins[w].energy : 0;
+    }
+    const sorted = vals.slice().sort((p, q) => p - q);
+    let t = 0, c = 0;
+    for(let w = trim; w < nWin - trim; w++){ t += sorted[w]; c++; }
+    return t / c;
+  }
+  const list = onlyBph ? [onlyBph] : BPH_OPTIONS;
+  const scores = {};
+  let best = -Infinity;
+  list.forEach(bph => {
+    const T = 3600 / bph * r2;
+    let top = -Infinity;
+    for(let lag = Math.floor(T * 0.97); lag <= Math.ceil(T * 1.03); lag++) top = Math.max(top, repeatAt(lag));
+    let ped = 0, pc = 0;
+    for(let f = 0.90; f <= 0.9401; f += 0.01){ ped += repeatAt(Math.round(T * f)) + repeatAt(Math.round(T * (2 - f))); pc += 2; }
+    scores[bph] = top - ped / pc;
+    if(scores[bph] > best) best = scores[bph];
+  });
+  if(best < 0.04) return null;
+  let chosen = list[0];
+  list.forEach(bph => { if(scores[bph] > scores[chosen]) chosen = bph; });
+  // A 36,000 bph watch also repeats every 200 ms, and with an uneven
+  // tick/tock that slower repeat can look the stronger of the two.
+  if(chosen === 18000 && scores[36000] >= 0.35 * best && scores[36000] >= 0.03) chosen = 36000;
+  return { bph: chosen, score: scores[chosen] };
+}
+
+// Stack a stretch of sound on top of itself, one tick-tock cycle per lap.
+// If the lap length matches the watch, the ticks pile up in the same place.
+function tickFoldRaw(amp, i0, i1, period, nb){
+  const sum = new Float64Array(nb), cnt = new Float64Array(nb);
+  const k = nb / period;
+  for(let i = i0; i < i1; i++){
+    const b = Math.floor((i * k) % nb);
+    sum[b] += amp[i]; cnt[b]++;
+  }
+  return { sum, cnt };
+}
+function tickNormalize(sum, cnt){
+  const nb = sum.length, prof = new Float64Array(nb);
+  let last = 0, mean = 0;
+  for(let b = 0; b < nb; b++){
+    if(cnt[b] > 0) last = sum[b] / cnt[b];
+    prof[b] = last; mean += last;
+  }
+  mean /= nb;
+  let norm = 0;
+  for(let b = 0; b < nb; b++){ prof[b] -= mean; norm += prof[b] * prof[b]; }
+  norm = Math.sqrt(norm);
+  if(norm > 0) for(let b = 0; b < nb; b++) prof[b] /= norm;
+  return prof;
+}
+function tickFold(amp, i0, i1, period, nb){
+  const r = tickFoldRaw(amp, i0, i1, period, nb);
+  return tickNormalize(r.sum, r.cnt);
+}
+
+// Rough first guess at the cycle length: try laps from 10 min/day slow to
+// 10 min/day fast and keep the one where the ticks stack up sharpest. Works
+// even when individual ticks are buried in noise, and means the fine
+// measurement below never starts far from the truth.
+function tickCoarsePeriod(amp, envRate, P0){
+  const dec = Math.max(1, Math.round(envRate / 2000));
+  const m = Math.floor(Math.min(amp.length, envRate * 12) / dec);
+  const x = new Float32Array(m);
+  for(let i = 0; i < m; i++){
+    let s = 0;
+    for(let j = 0; j < dec; j++) s += amp[i * dec + j];
+    x[i] = s / dec;
+  }
+  const p0 = P0 / dec;
+  const nb = Math.max(32, Math.round(p0 / (envRate / dec) * 1000));
+  let best = -1, bestPpm = 0;
+  const sum = new Float64Array(nb), cnt = new Float64Array(nb);
+  for(let ppm = -7000; ppm <= 7000; ppm += 40){
+    sum.fill(0); cnt.fill(0);
+    const k = nb / (p0 * (1 + ppm * 1e-6));
+    for(let i = 0; i < m; i++){ const b = Math.floor((i * k) % nb); sum[b] += x[i]; cnt[b]++; }
+    let mean = 0;
+    for(let b = 0; b < nb; b++){ sum[b] = cnt[b] > 0 ? sum[b] / cnt[b] : 0; mean += sum[b]; }
+    mean /= nb;
+    let v = 0;
+    for(let b = 0; b < nb; b++) v += (sum[b] - mean) * (sum[b] - mean);
+    if(v > best){ best = v; bestPpm = ppm; }
+  }
+  return P0 * (1 + bestPpm * 1e-6);
+}
+
+// How far has this stretch slid relative to the reference pattern?
+function tickShift(seg, tmpl, center, W){
+  const nb = seg.length;
+  const c = new Float64Array(2 * W + 3);
+  for(let j = -W - 1; j <= W + 1; j++){
+    const d = center + j;
+    const off = ((-d % nb) + nb) % nb;
+    let s = 0;
+    for(let b = 0; b < nb; b++){
+      let k = b + off; if(k >= nb) k -= nb;
+      s += seg[b] * tmpl[k];
+    }
+    c[j + W + 1] = s;
+  }
+  let bj = -W, bv = -Infinity;
+  for(let j = -W; j <= W; j++){ if(c[j + W + 1] > bv){ bv = c[j + W + 1]; bj = j; } }
+  const y0 = c[bj + W], y1 = c[bj + W + 1], y2 = c[bj + W + 2];
+  const den = y0 - 2 * y1 + y2;
+  let frac = den < 0 ? 0.5 * (y0 - y2) / den : 0;
+  if(frac > 0.5) frac = 0.5; if(frac < -0.5) frac = -0.5;
+  return { d: center + bj + frac, rho: bv };
+}
+
+// Whole-cycle search at reduced resolution: where in the cycle does this
+// stretch line up with the reference? Used to spot a break in the recording.
+function tickCoarseAlign(p, ref){
+  const nb = p.length, f = Math.max(1, Math.floor(nb / 256)), m = Math.floor(nb / f);
+  const a = new Float64Array(m), b = new Float64Array(m);
+  for(let i = 0; i < m; i++){
+    let s1 = 0, s2 = 0;
+    for(let j = 0; j < f; j++){ s1 += p[i * f + j]; s2 += ref[i * f + j]; }
+    a[i] = s1; b[i] = s2;
+  }
+  let best = -Infinity, bd = 0;
+  for(let d = 0; d < m; d++){
+    let s = 0;
+    for(let i = 0; i < m; i++){ let k = i - d; if(k < 0) k += m; s += a[i] * b[k]; }
+    if(s > best){ best = s; bd = d; }
+  }
+  let d = bd * f;
+  if(d > nb / 2) d -= nb;
+  return { d, pad: 2 * f };
+}
+
+// Straight-line fit of slide against time, ignoring stretches where the
+// tick was drowned out (a bump, a cough, the watch moving). Each unbroken
+// run of the recording gets its own starting point but they all share one
+// slope, so a break in the audio can't masquerade as the watch drifting.
+function tickRobustFit(t, d, rho, grp, total){
+  const floor = Math.max(0.08, 0.5 * tickMedian(rho));
+  let idx = [];
+  for(let i = 0; i < t.length; i++) if(rho[i] > floor) idx.push(i);
+  let out = null;
+  for(let pass = 0; pass < 3; pass++){
+    if(idx.length < Math.max(5, 0.4 * total)) return null;
+    const G = {};
+    idx.forEach(i => {
+      const w = rho[i] * rho[i];
+      const g = G[grp[i]] || (G[grp[i]] = { sw: 0, st: 0, sd: 0 });
+      g.sw += w; g.st += w * t[i]; g.sd += w * d[i];
+    });
+    let stt = 0, std = 0;
+    idx.forEach(i => {
+      const w = rho[i] * rho[i], g = G[grp[i]];
+      const dt = t[i] - g.st / g.sw, dd = d[i] - g.sd / g.sw;
+      stt += w * dt * dt; std += w * dt * dd;
+    });
+    if(stt <= 0) return null;
+    const slope = std / stt;
+    const res = idx.map(i => { const g = G[grp[i]]; return (d[i] - g.sd / g.sw) - slope * (t[i] - g.st / g.sw); });
+    let swr = 0;
+    idx.forEach((i, k) => { swr += rho[i] * rho[i] * res[k] * res[k]; });
+    const dof = Math.max(1, idx.length - 1 - Object.keys(G).length);
+    const se = Math.sqrt((swr / dof) / stt);
+    out = { slope, se, kept: idx.length, total, medRho: tickMedian(idx.map(i => rho[i])) };
+    const mad = tickMedian(res.map(Math.abs));
+    const lim = Math.max(3 * 1.4826 * mad, 0.05);
+    const next = idx.filter((i, k) => Math.abs(res[k]) <= lim);
+    if(next.length === idx.length) break;
+    idx = next;
+  }
+  return out;
+}
+
+// Beat error: how unevenly the tick and the tock are spaced, in ms.
+function tickBeatError(amp, period, envRate){
+  const nb = Math.round(period);
+  const p = tickFold(amp, 0, amp.length, period, nb);
+  let m1 = 0;
+  for(let b = 1; b < nb; b++) if(p[b] > p[m1]) m1 = b;
+  const half = nb / 2, win = Math.floor(nb / 5), maxLag = Math.floor(nb / 8);
+  const at = (i) => p[((Math.round(i) % nb) + nb) % nb];
+  let peak2 = -Infinity;
+  for(let i = -win; i <= win; i++) peak2 = Math.max(peak2, at(m1 + half + i));
+  if(peak2 < 0.12 * p[m1]) return null;
+  const c = [];
+  for(let d = -maxLag - 1; d <= maxLag + 1; d++){
+    let s = 0;
+    for(let i = -win; i <= win; i++) s += at(m1 + i) * at(m1 + half + i + d);
+    c.push(s);
+  }
+  let bi = 1;
+  for(let i = 1; i < c.length - 1; i++) if(c[i] > c[bi]) bi = i;
+  const den = c[bi - 1] - 2 * c[bi] + c[bi + 1];
+  let frac = den < 0 ? 0.5 * (c[bi - 1] - c[bi + 1]) / den : 0;
+  if(frac > 0.5) frac = 0.5; if(frac < -0.5) frac = -0.5;
+  const lagBins = (bi - (maxLag + 1)) + frac;
+  return Math.abs(lagBins) * (period / nb) / envRate * 1000;
+}
+
+// Fine measurement. Cuts the recording into stretches of about a second,
+// checks how far the tick pattern in each stretch has slid against the
+// pattern from the OTHER stretches (never against itself, so noise can't
+// flatter the result), and fits a line through that slide. A watch on rate
+// does not slide.
+//
+// Phones and browsers occasionally drop or pad a few milliseconds of
+// microphone audio. That shifts every later tick at once, which would look
+// like the watch lurching. So the recording is first split into unbroken
+// runs wherever the pattern suddenly jumps, and each run is measured on its
+// own terms.
+function tickMeasure(amp, envRate, P0, Pstart, mult){
+  const n = amp.length, nb = Math.round(P0);
+  const cyclesPerSeg = Math.max(2, Math.round(envRate / P0)) * mult;
+  let P = Pstart, fit = null, span = [0, n], nRuns = 1;
+  for(let iter = 0; iter < 5; iter++){
+    const segLen = Math.round(cyclesPerSeg * P);
+    const nSeg = Math.floor(n / segLen);
+    if(nSeg < 6) return null;
+    const W = Math.ceil(0.006 * envRate * nb / P);
+    const raws = [], profs = [];
+    for(let s = 0; s < nSeg; s++){
+      const r = tickFoldRaw(amp, s * segLen, (s + 1) * segLen, P, nb);
+      raws.push(r); profs.push(tickNormalize(r.sum, r.cnt));
+    }
+
+    // 1. Split into unbroken runs. A watch only ever slides by a hair from
+    // one second to the next, so a step of more than a millisecond between
+    // neighbouring stretches is the audio breaking, not the watch.
+    let runs = [[0]], weak = 0, at = 0;
+    const step = 0.001 * envRate * nb / P;
+    const rs = new Float64Array(nb), rc = new Float64Array(nb);
+    const seed = (s) => { rs.set(raws[s].sum); rc.set(raws[s].cnt); at = 0; };
+    const add = (s) => { for(let b = 0; b < nb; b++){ rs[b] += raws[s].sum[b]; rc[b] += raws[s].cnt[b]; } };
+    seed(0);
+    for(let s = 1; s < nSeg; s++){
+      const cur = runs[runs.length - 1];
+      const ref = tickNormalize(rs, rc);
+      // Where does this stretch sit against the run so far? Look right where
+      // the last one was, and also anywhere in the cycle. "Anywhere" only
+      // wins if it is clearly the better match.
+      let hit = tickShift(profs[s], ref, Math.round(at), W);
+      const ca = tickCoarseAlign(profs[s], ref);
+      if(Math.abs(ca.d - at) > W){
+        const far = tickShift(profs[s], ref, ca.d, Math.max(W, ca.pad));
+        if(far.rho > 1.25 * hit.rho) hit = far;
+      }
+      if(hit.rho < 0.25){
+        if(cur.length === 1){ cur[0] = s; seed(s); }              // run never got going, restart it here
+        weak++;                                                   // drowned out, skip it
+      }
+      else if(Math.abs(hit.d - at) <= step){ cur.push(s); add(s); at = hit.d; }   // carries straight on
+      else { runs.push([s]); seed(s); }                                           // the audio broke here
+    }
+    if(weak > 0.3 * nSeg){
+      // Tick too faint to judge joins stretch by stretch: treat as one piece.
+      runs = [[]];
+      for(let s = 0; s < nSeg; s++) runs[0].push(s);
+    }
+
+    // 2. Within each run, the slide of every stretch against the rest of it.
+    const ts = [], ds = [], rhos = [], grp = [];
+    const ls = new Float64Array(nb), lc = new Float64Array(nb);
+    let longest = runs[0];
+    runs.forEach((run, g) => {
+      if(run.length > longest.length) longest = run;
+      if(run.length < 3) return;
+      rs.fill(0); rc.fill(0);
+      run.forEach(add);
+      let prev = 0;
+      run.forEach(s => {
+        for(let b = 0; b < nb; b++){ ls[b] = rs[b] - raws[s].sum[b]; lc[b] = rc[b] - raws[s].cnt[b]; }
+        const r = tickShift(profs[s], tickNormalize(ls, lc), Math.round(prev), W);
+        ts.push((s + 0.5) * segLen); ds.push(r.d * P / nb); rhos.push(r.rho); grp.push(g);
+        if(r.rho > 0.25) prev = r.d;
+      });
+    });
+    if(ts.length < 5) return null;
+    fit = tickRobustFit(ts, ds, rhos, grp, nSeg);
+    if(!fit) return null;
+    P *= (1 + fit.slope);
+    span = [longest[0] * segLen, (longest[longest.length - 1] + 1) * segLen];
+    nRuns = runs.length;
+    if(Math.abs(fit.slope) < 2e-8) break;
+  }
+  return { P, fit, span, breaks: nRuns - 1 };
+}
+
+// The whole measurement. env is the loudness envelope from TickFrontEnd.
+// Returns the rate in seconds per day (positive = running fast).
+function tickAnalyze(env, envRate, bphHint){
+  const n = env.length;
+  if(n < envRate * 8) return { ok: false, reason: 'short' };
+  const amp = new Float32Array(n);
+  for(let i = 0; i < n; i++) amp[i] = Math.sqrt(env[i]);
+  const clip = 1.5 * tickPercentile(amp, 0.99);
+  if(clip > 0) for(let i = 0; i < n; i++) if(amp[i] > clip) amp[i] = clip;
+
+  const det = tickDetectBph(amp, envRate, bphHint || 0);
+  if(!det) return { ok: false, reason: 'nosignal' };
+  const bph = det.bph;
+  const P0 = 2 * 3600 / bph * envRate;   // one tick + one tock, in envelope samples
+  const Pc = tickCoarsePeriod(amp, envRate, P0);
+
+  // Short stretches first (most detail). If the tick is too faint for that,
+  // use longer stretches, which average more ticks together.
+  let got = null, sawFit = false;
+  const mults = [1, 2, 4];
+  for(let k = 0; k < mults.length; k++){
+    const r = tickMeasure(amp, envRate, P0, Pc, mults[k]);
+    if(!r) continue;
+    sawFit = true;
+    const se = 86400 * r.fit.se;
+    if(r.fit.medRho >= 0.3 && se <= 1.5){ got = r; break; }
+    if(r.fit.medRho >= 0.12 && se <= 3 && (!got || se < 86400 * got.fit.se)) got = r;
+  }
+  if(!got) return { ok: false, reason: sawFit ? 'unstable' : 'nosignal' };
+  return {
+    ok: true,
+    bph,
+    rate: 86400 * (P0 / got.P - 1),
+    rateSe: 86400 * got.fit.se,
+    beatMs: tickBeatError(amp.subarray(got.span[0], got.span[1]), got.P, envRate),
+    quality: got.fit.medRho,
+    keptFrac: got.fit.kept / got.fit.total,
+    breaks: got.breaks,
+    seconds: n / envRate
+  };
+}
+/* === TICK-DSP END === */
+
+/* ---------- accuracy tab (timegrapher) ---------- */
+const ACC_SECONDS = 30;       // length of one reading
+const ACC_MIN_SECONDS = 12;   // shortest recording worth analysing
+const ACC_IDLE_TEXT = "Find a quiet room and rest the watch against the phone's microphone (bottom edge on an iPhone). Mechanical watches only.";
+const ACC_TRASH = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 4.5h10"/><path d="M6.5 4.5V3.2c0-.4.3-.7.7-.7h1.6c.4 0 .7.3.7.7v1.3"/><path d="M4.2 4.5l.5 8c0 .5.5.9 1 .9h4.6c.5 0 .9-.4 1-.9l.5-8"/></svg>';
+
+// Runs on the audio thread so no sound is ever dropped while the page is busy drawing.
+const ACC_WORKLET_TAIL = `
+class TickFE extends AudioWorkletProcessor{
+  constructor(){
+    super();
+    this.fe = new TickFrontEnd(sampleRate);
+    var port = this.port;
+    this.fe.onchunk = function(c){ port.postMessage(c, [c.buffer]); };
+  }
+  process(inputs){
+    var ch = inputs[0] && inputs[0][0];
+    if(ch) this.fe.process(ch);
+    return true;
+  }
+}
+registerProcessor('tick-front-end', TickFE);
+`;
+
+const acc = {
+  phase: 'idle',            // idle | starting | listening | analyzing
+  token: 0,
+  ctx: null, stream: null, src: null, node: null, mute: null, wake: null,
+  env: null, envN: 0, envRate: 0, skip: 0, gotAudio: false,
+  raf: 0, watchdog: 0, nextLive: 0, liveOk: false,
+  watch: '', pos: '', hint: 0,
+  result: null
+};
+
+function fmtRate(v){
+  const a = Math.abs(v).toFixed(1);
+  if(a === '0.0') return '0.0';
+  return (v > 0 ? '+' : '−') + a;
+}
+
+function accSetStatus(text){
+  const el = document.getElementById('accStatus');
+  if(el) el.textContent = text;
+}
+function accMsg(text, isErr){
+  const el = document.getElementById('accMsg');
+  if(!el) return;
+  el.textContent = text;
+  el.classList.toggle('err', !!isErr);
+  if(text && !isErr) setTimeout(() => { if(el.textContent === text) el.textContent = ''; }, 2500);
+}
+function accSetButton(){
+  const btn = document.getElementById('accStartBtn');
+  if(!btn) return;
+  const busy = acc.phase !== 'idle';
+  btn.textContent = acc.phase === 'listening' ? 'Stop' : acc.phase === 'starting' ? 'Opening microphone…' : acc.phase === 'analyzing' ? 'Working it out…' : 'Start listening';
+  btn.classList.toggle('is-stop', acc.phase === 'listening');
+  btn.disabled = acc.phase === 'starting' || acc.phase === 'analyzing';
+  ['accWatch', 'accPos', 'accBph'].forEach(id => { const el = document.getElementById(id); if(el) el.disabled = busy; });
+}
+function accSetProgress(secs){
+  const bar = document.getElementById('accProgressBar');
+  if(bar) bar.style.width = Math.max(0, Math.min(100, secs / ACC_SECONDS * 100)) + '%';
+  const t = document.getElementById('accScopeTime');
+  if(t) t.textContent = secs > 0 ? Math.floor(secs) + ' / ' + ACC_SECONDS + ' s' : '';
+}
+
+// Live trace: the last two seconds of what the microphone hears, after the
+// tick filter. Evenly spaced spikes mean it has the watch.
+function accDraw(){
+  const cv = document.getElementById('accCanvas');
+  if(!cv) return;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if(!w || !h) return;
+  const dpr = window.devicePixelRatio || 1;
+  if(cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)){
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+  }
+  const g = cv.getContext('2d');
+  if(!g) return;
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  g.clearRect(0, 0, w, h);
+  const mid = Math.round(h / 2) + 6;
+  g.fillStyle = '#42464D';
+  g.fillRect(0, mid, w, 1);
+  if(!acc.env || acc.envN < 2) return;
+  const span = Math.round(acc.envRate * 2), end = acc.envN, first = end - span;
+  let peak = 0;
+  for(let i = Math.max(0, first); i < end; i++) if(acc.env[i] > peak) peak = acc.env[i];
+  if(peak <= 0) return;
+  const top = Math.sqrt(peak), maxH = h / 2 - 12;
+  const cols = Math.floor(w / 2);
+  g.fillStyle = '#C6EE7E';
+  for(let c = 0; c < cols; c++){
+    const i0 = first + Math.floor(c * span / cols), i1 = first + Math.floor((c + 1) * span / cols);
+    if(i1 <= 0) continue;
+    let m = 0;
+    for(let i = Math.max(0, i0); i < i1; i++) if(acc.env[i] > m) m = acc.env[i];
+    const bh = Math.max(0.5, Math.sqrt(m) / top * maxH);
+    g.fillRect(c * 2, mid - bh, 1.3, bh * 2 + 1);
+  }
+}
+
+function accPush(chunk){
+  if(acc.phase !== 'listening' && acc.phase !== 'starting') return;
+  if(!acc.env) return;
+  acc.gotAudio = true;
+  for(let i = 0; i < chunk.length; i++){
+    if(acc.skip > 0){ acc.skip--; continue; }      // drop the pop as the mic opens
+    if(acc.envN < acc.env.length) acc.env[acc.envN++] = chunk[i];
+  }
+  if(acc.phase === 'listening' && acc.envN >= acc.envRate * ACC_SECONDS) accFinish();
+}
+
+function accLoop(){
+  if(acc.phase !== 'listening') return;
+  accDraw();
+  const secs = acc.envN / acc.envRate;
+  accSetProgress(secs);
+  if(acc.liveOk && secs >= acc.nextLive){
+    acc.nextLive = secs + 4;
+    let r = null;
+    const from = Math.max(0, acc.envN - Math.round(acc.envRate * 14));
+    try{ r = tickAnalyze(acc.env.subarray(from, acc.envN), acc.envRate, acc.hint); }catch(e){ console.error(e); }
+    if(acc.phase !== 'listening') return;
+    if(r && r.ok) accSetStatus('Hearing a ' + r.bph.toLocaleString() + ' bph tick, about ' + fmtRate(r.rate) + ' s/day so far. Keep it still.');
+    else accSetStatus('No steady tick yet. Try pressing the watch closer to the microphone.');
+  }
+  acc.raf = requestAnimationFrame(accLoop);
+}
+
+function accTeardown(){
+  acc.token++;
+  if(acc.raf){ cancelAnimationFrame(acc.raf); acc.raf = 0; }
+  if(acc.watchdog){ clearTimeout(acc.watchdog); acc.watchdog = 0; }
+  try{ if(acc.node){ acc.node.onaudioprocess = null; if(acc.node.port) acc.node.port.onmessage = null; acc.node.disconnect(); } }catch(e){}
+  try{ if(acc.src) acc.src.disconnect(); }catch(e){}
+  try{ if(acc.mute) acc.mute.disconnect(); }catch(e){}
+  try{ if(acc.stream) acc.stream.getTracks().forEach(t => t.stop()); }catch(e){}
+  try{ if(acc.ctx && acc.ctx.state !== 'closed'){ const p = acc.ctx.close(); if(p && p.catch) p.catch(() => {}); } }catch(e){}
+  try{ if(acc.wake){ const p = acc.wake.release(); if(p && p.catch) p.catch(() => {}); } }catch(e){}
+  acc.node = acc.src = acc.mute = acc.stream = acc.ctx = acc.wake = null;
+  acc.phase = 'idle';
+  accSetButton();
+}
+
+// Stop without a reading (left the tab, phone locked, user bailed early).
+function accCancel(message){
+  if(acc.phase === 'idle' || acc.phase === 'analyzing') return;
+  accTeardown();
+  accSetProgress(0);
+  accSetStatus(ACC_IDLE_TEXT);
+  if(message) accMsg(message, true);
+}
+
+async function accStart(){
+  if(acc.phase !== 'idle') return;
+  const watch = document.getElementById('accWatch').value;
+  if(!watch){ accMsg('Pick a watch first', true); return; }
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if(!AC || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    accMsg("The microphone isn't available here. Open WristCheck from its https web address in Safari or Chrome.", true);
+    return;
+  }
+  accMsg('');
+  accHideResult();
+  acc.watch = watch;
+  acc.pos = document.getElementById('accPos').value;
+  acc.hint = Number(document.getElementById('accBph').value) || 0;
+  acc.env = null; acc.envN = 0; acc.gotAudio = false;
+  acc.phase = 'starting';
+  const token = ++acc.token;
+  accSetButton();
+  accSetProgress(0);
+
+  let stream;
+  try{
+    // The phone's voice processing (echo cancelling, noise suppression,
+    // auto gain) is built to erase exactly this kind of faint click.
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+      video: false
+    });
+  }catch(e){
+    if(token !== acc.token) return;
+    accTeardown();
+    const blocked = e && (e.name === 'NotAllowedError' || e.name === 'SecurityError' || e.name === 'PermissionDeniedError');
+    accMsg(blocked
+      ? 'Microphone access was blocked. Allow the microphone for this site, then try again.'
+      : "Couldn't open the microphone on this device.", true);
+    return;
+  }
+  if(token !== acc.token){ stream.getTracks().forEach(t => t.stop()); return; }
+  acc.stream = stream;
+
+  let ctx;
+  try{ ctx = new AC(); }catch(e){ accTeardown(); accMsg("Couldn't start audio on this device.", true); return; }
+  acc.ctx = ctx;
+  try{ const p = ctx.resume(); if(p && p.catch) p.catch(() => {}); }catch(e){}
+
+  const fe = new TickFrontEnd(ctx.sampleRate);
+  acc.envRate = fe.envRate;
+  acc.env = new Float32Array(Math.ceil(acc.envRate * (ACC_SECONDS + 2)));
+  acc.envN = 0;
+  acc.skip = Math.round(acc.envRate * 0.6);
+
+  let node = null;
+  acc.liveOk = false;
+  if(ctx.audioWorklet && typeof AudioWorkletNode !== 'undefined'){
+    try{
+      const code = TickFrontEnd.toString() + '\nTickFrontEnd.prototype.process = ' + TickFrontEnd.prototype.process.toString() + ';\n' + ACC_WORKLET_TAIL;
+      const url = URL.createObjectURL(new Blob([code], { type: 'application/javascript' }));
+      try{ await ctx.audioWorklet.addModule(url); } finally { URL.revokeObjectURL(url); }
+      if(token !== acc.token) return;
+      node = new AudioWorkletNode(ctx, 'tick-front-end', { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1] });
+      node.port.onmessage = (e) => accPush(e.data);
+      acc.liveOk = true;
+    }catch(e){
+      if(token !== acc.token) return;
+      node = null;
+    }
+  }
+  if(!node){
+    // Older browsers: filter on the main thread. Big buffer and no running
+    // estimate, so the page never keeps the microphone waiting.
+    fe.onchunk = accPush;
+    node = ctx.createScriptProcessor(16384, 1, 1);
+    node.onaudioprocess = (ev) => { fe.process(ev.inputBuffer.getChannelData(0)); };
+  }
+  try{
+    acc.src = ctx.createMediaStreamSource(stream);
+    acc.mute = ctx.createGain();
+    acc.mute.gain.value = 0;                 // listen only, never play the mic back out
+    acc.src.connect(node); node.connect(acc.mute); acc.mute.connect(ctx.destination);
+  }catch(e){
+    accTeardown(); accMsg("Couldn't start audio on this device.", true); return;
+  }
+  acc.node = node;
+
+  acc.phase = 'listening';
+  acc.nextLive = 9;
+  accSetButton();
+  accSetStatus('Listening. Hold the watch still against the microphone.');
+  acc.watchdog = setTimeout(() => {
+    if(acc.phase === 'listening' && !acc.gotAudio) accCancel('The microphone opened but no sound came through. Tap Start again.');
+  }, 5000);
+  try{
+    if(navigator.wakeLock && navigator.wakeLock.request){
+      navigator.wakeLock.request('screen').then(w => { if(acc.phase === 'listening') acc.wake = w; else w.release(); }).catch(() => {});
+    }
+  }catch(e){}
+  acc.raf = requestAnimationFrame(accLoop);
+}
+
+function accStop(){
+  if(acc.phase !== 'listening') return;
+  if(acc.envN / acc.envRate < ACC_MIN_SECONDS){
+    accCancel('Stopped early. It needs at least ' + ACC_MIN_SECONDS + ' seconds to get a reading.');
+    return;
+  }
+  accFinish();
+}
+
+function accFinish(){
+  if(acc.phase !== 'listening') return;
+  const env = acc.env.slice(0, acc.envN), envRate = acc.envRate, hint = acc.hint;
+  accDraw();
+  accTeardown();
+  acc.phase = 'analyzing';
+  accSetButton();
+  accSetProgress(env.length / envRate);
+  accSetStatus('Working it out…');
+  setTimeout(() => {
+    let r;
+    try{ r = tickAnalyze(env, envRate, hint); }catch(e){ console.error(e); r = { ok: false, reason: 'error' }; }
+    acc.phase = 'idle';
+    accSetButton();
+    accSetProgress(0);
+    accSetStatus(ACC_IDLE_TEXT);
+    if(!r.ok){
+      accMsg(
+        r.reason === 'nosignal' ? "Couldn't pick out a steady tick. Try a quieter room, or press the watch closer to the microphone." :
+        r.reason === 'unstable' ? 'The tick kept dropping out. Hold the watch still against the microphone and try again.' :
+        r.reason === 'short' ? 'That was too short to measure. Let it run a little longer.' :
+        'Something went wrong working that out. Try again.', true);
+      return;
+    }
+    acc.result = r;
+    accShowResult();
+  }, 40);
+}
+
+function accHideResult(){
+  acc.result = null;
+  const el = document.getElementById('accResult');
+  if(el) el.hidden = true;
+}
+
+function accShowResult(){
+  const r = acc.result;
+  if(!r) return;
+  const about = Math.abs(r.rate).toFixed(1);
+  document.getElementById('accRate').textContent = fmtRate(r.rate);
+  let verdict = about === '0.0' ? 'Dead on.' :
+    r.rate > 0 ? 'Running fast. Gains about ' + about + ' seconds a day.' :
+    'Running slow. Loses about ' + about + ' seconds a day.';
+  if(r.rateSe >= 0.75) verdict += ' The rate wandered while listening (by about \u00b1' + (2 * r.rateSe).toFixed(1) + '), so take another reading to be sure.';
+  else if(r.quality < 0.3) verdict += ' The tick was faint, so treat this as a rough reading.';
+  document.getElementById('accVerdict').textContent = verdict;
+  document.getElementById('accFactBph').textContent = r.bph.toLocaleString();
+  document.getElementById('accFactBeat').textContent = r.beatMs == null ? 'n/a' : r.beatMs.toFixed(1) + ' ms';
+  document.getElementById('accFactSignal').textContent = r.quality >= 0.6 ? 'Strong' : r.quality >= 0.3 ? 'Fair' : 'Faint';
+  const box = document.getElementById('accResult');
+  box.hidden = false;
+  if(box.scrollIntoView) box.scrollIntoView({ block: 'nearest' });
+}
+
+async function accSave(){
+  const r = acc.result;
+  if(!r) return;
+  state.accuracy.push({
+    id: uid(),
+    ts: new Date().toISOString(),
+    watch: acc.watch,
+    rate: Math.round(r.rate * 10) / 10,
+    bph: r.bph,
+    beat: r.beatMs == null ? null : Math.round(r.beatMs * 10) / 10,
+    pos: acc.pos,
+    q: Math.round(r.quality * 100) / 100
+  });
+  accHideResult();
+  await storageSet(KEYS.accuracy, state.accuracy);
+  accMsg('Saved');
+  scheduleRender(renderAccuracy);
+}
+
+async function accDelete(id){
+  state.accuracy = state.accuracy.filter(r => r.id !== id);
+  await storageSet(KEYS.accuracy, state.accuracy);
+  scheduleRender(renderAccuracy);
+}
+
+function fmtReadingTime(ts){
+  const d = new Date(ts);
+  if(isNaN(d.getTime())) return String(ts);
+  const opts = { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+  if(d.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
+  return d.toLocaleString(undefined, opts);
+}
+
+function renderAccuracy(){
+  const sel = document.getElementById('accWatch');
+  if(!sel) return;
+  const current = sel.value;
+  const names = state.collection.filter(w => w.active).map(w => w.name).sort((a, b) => a.localeCompare(b));
+  sel.innerHTML = '<option value="" disabled selected>Choose a watch</option>' +
+    names.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+  if(names.includes(current)) sel.value = current;
+
+  // Average rate per watch
+  const byWatch = {};
+  state.accuracy.forEach(r => { (byWatch[r.watch] = byWatch[r.watch] || []).push(r.rate); });
+  const avgNames = Object.keys(byWatch).sort((a, b) => a.localeCompare(b));
+  document.getElementById('accAvgCard').hidden = avgNames.length === 0;
+  document.getElementById('accAvgList').innerHTML = avgNames.map(n => {
+    const list = byWatch[n];
+    const avg = list.reduce((s, v) => s + v, 0) / list.length;
+    return `
+      <li>
+        <span class="dot" style="background:${styleFor(n).color}"></span>
+        <span class="legend-name">${escapeHtml(n)}</span>
+        <span class="legend-pct">${fmtRate(avg)}</span>
+        <span class="legend-count">${list.length}&times;</span>
+      </li>`;
+  }).join('');
+
+  // Readings, newest first
+  const list = document.getElementById('accList');
+  const sorted = state.accuracy.slice().sort((a, b) => String(b.ts).localeCompare(String(a.ts)));
+  if(sorted.length === 0){
+    list.innerHTML = '<li class="empty-state" style="display:block;">No readings yet. Take one above and save it.</li>';
+    return;
+  }
+  list.innerHTML = sorted.slice(0, 80).map(r => `
+    <li>
+      <div class="row-main">
+        ${watchBadge(r.watch, 32)}
+        <div class="hl-left">
+          <span class="hl-date">${escapeHtml(fmtReadingTime(r.ts))}</span>
+          <span class="hl-watch">${escapeHtml(r.watch)}</span>
+        </div>
+      </div>
+      <span class="acc-reading"><b>${fmtRate(r.rate)}<small>s/d</small></b>${r.pos ? '<i>' + escapeHtml(r.pos) + '</i>' : ''}</span>
+      <button class="icon-btn" data-acc-del="${escapeHtml(r.id)}" aria-label="Delete reading">${ACC_TRASH}</button>
+    </li>
+  `).join('');
+}
+
+function initAccuracy(){
+  accSetStatus(ACC_IDLE_TEXT);
+  accSetButton();
+  document.getElementById('accStartBtn').addEventListener('click', () => {
+    if(acc.phase === 'idle') accStart();
+    else if(acc.phase === 'listening') accStop();
+  });
+  document.getElementById('accSaveBtn').addEventListener('click', accSave);
+  document.getElementById('accDiscardBtn').addEventListener('click', accHideResult);
+  document.getElementById('accList').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-acc-del]');
+    if(btn){ btn.blur(); accDelete(btn.dataset.accDel); }
+  });
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden) accCancel('Stopped because the app went into the background.');
+  });
+}
+
 function switchTab(tab){
+  if(tab !== 'accuracy') accCancel();     // never keep the microphone open on another tab
   document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  if(tab === 'accuracy') setTimeout(accDraw, 0);
 }
 
 /* ---------- init ---------- */
@@ -1507,6 +2518,7 @@ async function init(){
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
+  initAccuracy();
 }
 
 init();
