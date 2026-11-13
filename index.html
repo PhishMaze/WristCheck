@@ -372,6 +372,11 @@
   .active-toggle:focus-visible{outline:2px solid var(--lume);outline-offset:2px;}
 
   /* stats */
+  .seg{display:flex;gap:0.2rem;background:var(--surface);border:1px solid var(--hairline);border-radius:999px;padding:0.2rem;margin-bottom:1rem;}
+  .seg button{flex:1;background:none;border:none;border-radius:999px;padding:0.5rem 0.2rem;color:var(--text-muted);font-size:0.82rem;font-weight:600;}
+  .seg button.active{background:var(--lume);color:var(--lume-ink);}
+  .stats-pager{margin:0 0 1rem;}
+  .stats-pager .pager-label{color:var(--text);font-size:0.86rem;}
   .stats-summary{display:flex;gap:0.7rem;margin-bottom:1.1rem;}
   .stat-block{
     flex:1;
@@ -641,6 +646,17 @@
     </section>
 
     <section id="panel-stats" class="panel">
+      <div class="seg" id="statsModes" role="group" aria-label="Period">
+        <button type="button" data-stats-mode="all">All</button>
+        <button type="button" data-stats-mode="year">Year</button>
+        <button type="button" data-stats-mode="quarter">Quarter</button>
+        <button type="button" data-stats-mode="month">Month</button>
+      </div>
+      <div class="pager stats-pager" id="statsPager" hidden>
+        <button type="button" id="statsPrev" class="pager-btn" aria-label="Earlier">‹</button>
+        <span class="pager-label" id="statsPeriodLabel"></span>
+        <button type="button" id="statsNext" class="pager-btn" aria-label="Later">›</button>
+      </div>
       <div class="stats-summary" id="statsSummary"></div>
 
       <div class="card">
@@ -992,11 +1008,13 @@ function watchBadge(name, size){
   </svg>`;
 }
 
-function computeStats(){
+// Counts wears per watch. With a range, only entries dated inside it count.
+function computeStats(range){
   const counts = {};
-  state.entries.forEach(e => counts[e.watch] = (counts[e.watch]||0) + 1);
+  const entries = range ? state.entries.filter(e => e.date >= range.start && e.date <= range.end) : state.entries;
+  entries.forEach(e => counts[e.watch] = (counts[e.watch]||0) + 1);
   state.collection.forEach(w => { if(w.active && !(w.name in counts)) counts[w.name] = 0; });
-  const total = state.entries.length;
+  const total = entries.length;
   const rows = Object.entries(counts).map(([watch,count]) => ({
     watch, count, pct: total ? (count/total)*100 : 0
   }));
@@ -1815,8 +1833,85 @@ function initWatchView(){
 }
 
 /* ---------- render: stats ---------- */
+/* ---------- stats period ---------- */
+// Stats can cover everything, or one year, quarter or month at a time.
+const STATS_MODES = { all: 'All', year: 'Year', quarter: 'Quarter', month: 'Month' };
+const STATS_STEP = { year: 12, quarter: 3, month: 1 };
+let statsMode = 'all';
+let statsAt = null;            // month being looked at, counted as year * 12 + month
+
+function monthIndex(iso){
+  return Number(iso.slice(0, 4)) * 12 + Number(iso.slice(5, 7)) - 1;
+}
+
+// First month of the period (year, quarter or month) that a month falls in.
+function periodStart(mi, mode){
+  const step = STATS_STEP[mode];
+  return mi - (((mi % step) + step) % step);
+}
+
+// The earliest and latest periods worth stepping to: from the first log
+// entry up to today (or the last entry, if one is dated ahead).
+function statsBounds(mode){
+  const today = monthIndex(todayStr());
+  let lo = today, hi = today;
+  state.entries.forEach(e => { const mi = monthIndex(e.date); if(mi < lo) lo = mi; if(mi > hi) hi = mi; });
+  return { lo: periodStart(lo, mode), hi: periodStart(hi, mode) };
+}
+
+function statsPeriod(){
+  if(statsMode === 'all') return null;
+  const b = statsBounds(statsMode);
+  if(statsAt == null) statsAt = monthIndex(todayStr());
+  statsAt = Math.min(b.hi, Math.max(b.lo, periodStart(statsAt, statsMode)));
+  const step = STATS_STEP[statsMode];
+  const y = Math.floor(statsAt / 12), m = statsAt % 12;
+  const pad = (n) => String(n).padStart(2, '0');
+  const endMi = statsAt + step - 1, ey = Math.floor(endMi / 12), em = endMi % 12;
+  const lastDay = new Date(ey, em + 1, 0).getDate();
+  const label = statsMode === 'year' ? String(y)
+    : statsMode === 'quarter' ? 'Q' + (Math.floor(m / 3) + 1) + ' ' + y
+    : new Date(y, m, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+  return {
+    start: y + '-' + pad(m + 1) + '-01',
+    end: ey + '-' + pad(em + 1) + '-' + pad(lastDay),
+    label,
+    hasPrev: statsAt > b.lo,
+    hasNext: statsAt < b.hi
+  };
+}
+
+function setStatsMode(mode){
+  if(!STATS_MODES[mode] || mode === statsMode) return;
+  statsMode = mode;
+  renderStats();
+}
+
+function stepStats(dir){
+  if(statsMode === 'all' || statsAt == null) return;
+  statsAt += dir * STATS_STEP[statsMode];
+  renderStats();
+}
+
+function renderStatsPeriod(period){
+  document.querySelectorAll('#statsModes [data-stats-mode]').forEach(b => {
+    const on = b.dataset.statsMode === statsMode;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  const pager = document.getElementById('statsPager');
+  pager.hidden = !period;
+  if(period){
+    document.getElementById('statsPeriodLabel').textContent = period.label;
+    document.getElementById('statsPrev').disabled = !period.hasPrev;
+    document.getElementById('statsNext').disabled = !period.hasNext;
+  }
+}
+
 function renderStats(){
-  const { rows, total } = computeStats();
+  const period = statsPeriod();
+  renderStatsPeriod(period);
+  const { rows, total } = computeStats(period);
   const worn = rows.filter(r => r.count > 0);
   const unworn = rows.filter(r => r.count === 0);
 
@@ -1861,7 +1956,7 @@ function renderStats(){
     </li>
   `).join('');
   if(unworn.length){
-    legendHtml += `<li style="border-bottom:none;padding-top:0.7rem;"><span class="legend-name dim" style="font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;">Not yet worn</span></li>`;
+    legendHtml += `<li style="border-bottom:none;padding-top:0.7rem;"><span class="legend-name dim" style="font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;">${period ? 'Not worn in ' + escapeHtml(period.label) : 'Not yet worn'}</span></li>`;
     legendHtml += unworn.map(row => `
       <li>
         <span class="dot empty"></span>
@@ -3144,6 +3239,12 @@ async function init(){
     }
   });
   initWatchView();
+  document.getElementById('statsModes').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-stats-mode]');
+    if(b){ b.blur(); setStatsMode(b.dataset.statsMode); }
+  });
+  document.getElementById('statsPrev').addEventListener('click', () => stepStats(-1));
+  document.getElementById('statsNext').addEventListener('click', () => stepStats(1));
   initCrop();
   document.getElementById('exportBtn').addEventListener('click', exportSpreadsheet);
   document.getElementById('importBtn').addEventListener('click', () => {
